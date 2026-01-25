@@ -6,8 +6,11 @@
 //
 
 import SwiftUI
-import VisionKit
 import Vision
+import AVFoundation
+
+private let scanFormGray = Color(white: 0.94)
+private let scanCellGray = Color(white: 0.97)
 
 struct PrescriptionScannerView: View {
     @EnvironmentObject var medicationStore: MedicationStore
@@ -39,7 +42,7 @@ struct PrescriptionScannerView: View {
             }) {
                 HStack {
                     Image(systemName: "camera.fill")
-                    Text("Scan Your Prescription")
+                    Text("Scan Prescription")
                 }
                 .font(.headline)
                 .foregroundColor(.black.opacity(0.75))
@@ -63,37 +66,102 @@ struct PrescriptionScannerView: View {
             }
             
             if !extractedText.isEmpty {
-                VStack(alignment: .center, spacing: 8) {
-                    Text("Extracted Text:")
-                        .font(.headline)
+                // Extracted Text – morphism-style design
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Extracted Text")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(.secondary)
                     Text(extractedText)
-                        .font(.body)
-                        .multilineTextAlignment(.center)
-                        .padding()
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(8)
+                        .font(.system(size: 14))
+                        .foregroundColor(.primary)
+                        .multilineTextAlignment(.leading)
+                        .lineSpacing(4)
                 }
-                .frame(maxWidth: .infinity)
-                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(16)
+                .background(scanCellGray)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color.black.opacity(0.07),
+                                    Color.black.opacity(0.02),
+                                    Color.clear
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .allowsHitTesting(false)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 4)
+                .padding(.horizontal, 20)
+                .padding(.top, 4)
                 
-                Button(action: {
-                    showMedicationForm = true
-                }) {
-                    Text("Add Medication")
-                        .font(.headline)
+                // Add Medication – morphism table
+                VStack(spacing: 0) {
+                    Button(action: {
+                        showMedicationForm = true
+                    }) {
+                        HStack {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.system(size: 18))
+                            Text("Add Medication")
+                                .font(.system(size: 16, weight: .semibold))
+                        }
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.green)
-                        .cornerRadius(12)
+                        .padding(.vertical, 16)
+                        .padding(.horizontal, 24)
+                        .background(Color(red: 0.35, green: 0.72, blue: 0.42))
+                        .overlay(
+                            Capsule()
+                                .fill(
+                                    LinearGradient(
+                                        colors: [
+                                            Color.black.opacity(0.15),
+                                            Color.black.opacity(0.03),
+                                            Color.clear
+                                        ],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .allowsHitTesting(false)
+                        )
+                        .clipShape(Capsule())
+                        .shadow(color: Color.green.opacity(0.35), radius: 8, x: 0, y: 4)
+                    }
                 }
-                .padding(.horizontal)
+                .padding(16)
+                .background(scanFormGray)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color.black.opacity(0.06),
+                                    Color.black.opacity(0.02),
+                                    Color.clear
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .allowsHitTesting(false)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 4)
+                .padding(.horizontal, 20)
+                .padding(.top, 8)
             }
             
             Spacer(minLength: 0)
         }
         .sheet(isPresented: $showScanner) {
-            DocumentScannerView(scannedImage: $scannedImage, extractedText: $extractedText)
+            ScannerSheetView(scannedImage: $scannedImage, extractedText: $extractedText)
         }
         .sheet(isPresented: $showMedicationForm) {
             MedicationFormView(
@@ -105,65 +173,214 @@ struct PrescriptionScannerView: View {
     }
 }
 
-struct DocumentScannerView: UIViewControllerRepresentable {
+private struct ScannerSheetView: View {
     @Binding var scannedImage: UIImage?
     @Binding var extractedText: String
+    @State private var showCamera = false
     @Environment(\.dismiss) var dismiss
     
-    func makeUIViewController(context: Context) -> VNDocumentCameraViewController {
-        let scanner = VNDocumentCameraViewController()
-        scanner.delegate = context.coordinator
-        return scanner
-    }
-    
-    func updateUIViewController(_ uiViewController: VNDocumentCameraViewController, context: Context) {}
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    class Coordinator: NSObject, VNDocumentCameraViewControllerDelegate {
-        let parent: DocumentScannerView
-        
-        init(_ parent: DocumentScannerView) {
-            self.parent = parent
-        }
-        
-        func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
-            if scan.pageCount > 0 {
-                let image = scan.imageOfPage(at: 0)
-                parent.scannedImage = image
-                extractText(from: image)
-            }
-            parent.dismiss()
-        }
-        
-        func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: Error) {
-            parent.dismiss()
-        }
-        
-        func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
-            parent.dismiss()
-        }
-        
-        private func extractText(from image: UIImage) {
-            guard let cgImage = image.cgImage else { return }
-            
-            let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-            let request = VNRecognizeTextRequest { request, error in
-                guard let observations = request.results as? [VNRecognizedTextObservation] else { return }
-                
-                let recognizedStrings = observations.compactMap { observation in
-                    observation.topCandidates(1).first?.string
-                }
-                
-                DispatchQueue.main.async {
-                    self.parent.extractedText = recognizedStrings.joined(separator: "\n")
+    var body: some View {
+        Group {
+            if showCamera {
+                CustomCameraScanView(
+                    onCapture: { image, text in
+                        scannedImage = image
+                        extractedText = text
+                        dismiss()
+                    },
+                    onCancel: {
+                        dismiss()
+                    }
+                )
+            } else {
+                ZStack {
+                    Color(white: 0.96)
+                        .ignoresSafeArea()
+                    VStack(spacing: 20) {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .scaleEffect(1.4)
+                        Text("Loading camera…")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             }
-            
-            request.recognitionLevel = .accurate
-            try? requestHandler.perform([request])
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onAppear {
+            showCamera = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    showCamera = true
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Custom camera with manual Capture button
+
+private struct CustomCameraScanView: UIViewControllerRepresentable {
+    let onCapture: (UIImage, String) -> Void
+    let onCancel: () -> Void
+    
+    func makeUIViewController(context: Context) -> CameraScanViewController {
+        CameraScanViewController(onCapture: onCapture, onCancel: onCancel)
+    }
+    
+    func updateUIViewController(_ uiViewController: CameraScanViewController, context: Context) {}
+}
+
+private final class CameraScanViewController: UIViewController {
+    private let onCapture: (UIImage, String) -> Void
+    private let onCancel: () -> Void
+    
+    private var captureSession: AVCaptureSession?
+    private var photoOutput: AVCapturePhotoOutput?
+    private var previewLayer: AVCaptureVideoPreviewLayer?
+    private var captureButton: UIButton?
+    private var isCapturing = false
+    
+    init(onCapture: @escaping (UIImage, String) -> Void, onCancel: @escaping () -> Void) {
+        self.onCapture = onCapture
+        self.onCancel = onCancel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .black
+        setupCamera()
+        setupButtons()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        previewLayer?.frame = view.bounds
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            self?.captureSession?.startRunning()
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        captureSession?.stopRunning()
+    }
+    
+    private func setupCamera() {
+        let session = AVCaptureSession()
+        session.sessionPreset = .high
+        
+        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
+              let input = try? AVCaptureDeviceInput(device: device),
+              session.canAddInput(input) else { return }
+        session.addInput(input)
+        
+        let output = AVCapturePhotoOutput()
+        guard session.canAddOutput(output) else { return }
+        session.addOutput(output)
+        photoOutput = output
+        
+        let layer = AVCaptureVideoPreviewLayer(session: session)
+        layer.videoGravity = .resizeAspectFill
+        layer.frame = view.bounds
+        view.layer.addSublayer(layer)
+        previewLayer = layer
+        captureSession = session
+    }
+    
+    private func setupButtons() {
+        let cancel = UIButton(type: .system)
+        cancel.setTitle("Cancel", for: .normal)
+        cancel.setTitleColor(.white, for: .normal)
+        cancel.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
+        cancel.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
+        cancel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(cancel)
+        
+        let capture = UIButton(type: .system)
+        capture.setTitle("Capture", for: .normal)
+        capture.setTitleColor(.white, for: .normal)
+        capture.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
+        capture.backgroundColor = UIColor.systemBlue
+        capture.layer.cornerRadius = 28
+        capture.addTarget(self, action: #selector(captureTapped), for: .touchUpInside)
+        capture.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(capture)
+        captureButton = capture
+        
+        NSLayoutConstraint.activate([
+            cancel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            cancel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12),
+            capture.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            capture.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -32),
+            capture.widthAnchor.constraint(equalToConstant: 160),
+            capture.heightAnchor.constraint(equalToConstant: 56)
+        ])
+    }
+    
+    @objc private func cancelTapped() {
+        onCancel()
+    }
+    
+    @objc private func captureTapped() {
+        guard !isCapturing, let output = photoOutput else { return }
+        isCapturing = true
+        captureButton?.isEnabled = false
+        let settings = AVCapturePhotoSettings()
+        output.capturePhoto(with: settings, delegate: self)
+    }
+    
+    private func extractText(from image: UIImage, completion: @escaping (String) -> Void) {
+        guard let cgImage = image.cgImage else {
+            DispatchQueue.main.async { completion("") }
+            return
+        }
+        let request = VNRecognizeTextRequest { request, _ in
+            let text: String
+            if let observations = request.results as? [VNRecognizedTextObservation] {
+                text = observations.compactMap { $0.topCandidates(1).first?.string }.joined(separator: "\n")
+            } else {
+                text = ""
+            }
+            DispatchQueue.main.async { completion(text) }
+        }
+        request.recognitionLevel = .accurate
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+                try handler.perform([request])
+            } catch {
+                DispatchQueue.main.async { completion("") }
+            }
+        }
+    }
+}
+
+extension CameraScanViewController: AVCapturePhotoCaptureDelegate {
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        defer {
+            DispatchQueue.main.async { [weak self] in
+                self?.isCapturing = false
+                self?.captureButton?.isEnabled = true
+            }
+        }
+        guard error == nil,
+              let data = photo.fileDataRepresentation(),
+              let image = UIImage(data: data) else {
+            DispatchQueue.main.async { [weak self] in self?.onCancel() }
+            return
+        }
+        extractText(from: image) { [weak self] text in
+            self?.onCapture(image, text)
         }
     }
 }
