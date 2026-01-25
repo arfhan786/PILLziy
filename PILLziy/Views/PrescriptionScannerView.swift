@@ -42,11 +42,14 @@ struct PrescriptionScannerView: View {
                     Text("Scan Your Prescription")
                 }
                 .font(.headline)
-                .foregroundColor(.white)
+                .foregroundColor(.black.opacity(0.75))
                 .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.blue)
-                .cornerRadius(12)
+                .padding(.vertical, 16)
+                .padding(.horizontal, 24)
+                .background(Color(white: 0.92))
+                .clipShape(Capsule())
+                .shadow(color: .white, radius: 6, x: 0, y: 4)
+                .shadow(color: Color.gray.opacity(0.15), radius: 8, x: 0, y: 4)
             }
             .padding(.horizontal)
 

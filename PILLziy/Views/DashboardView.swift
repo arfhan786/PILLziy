@@ -41,6 +41,7 @@ struct DashboardView: View {
                 if let medication = selectedMedication ?? medicationStore.medications.first {
                     MedicationCardView(medication: medication)
                         .padding(.horizontal, 20)
+                        .padding(.top, 44)
                 } else {
                     VStack(spacing: 20) {
                         Text("No medications added")
@@ -72,7 +73,7 @@ struct MedicationCardView: View {
         VStack(spacing: 20) {
             // Pill Video (PILLziyVideo) – autoplays and loops on appear
             LoopingPillVideoView()
-                .frame(height: 200)
+                .frame(height: 260)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             
             // Medication name
@@ -103,7 +104,8 @@ struct MedicationCardView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
                         .background(Color.blue)
-                        .cornerRadius(12)
+                        .clipShape(Capsule())
+                        .shadow(color: Color.black.opacity(0.15), radius: 6, x: 0, y: 3)
                     }
                     
                     // Skip Dose button (red)
@@ -120,7 +122,8 @@ struct MedicationCardView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
                         .background(Color.red)
-                        .cornerRadius(12)
+                        .clipShape(Capsule())
+                        .shadow(color: Color.black.opacity(0.15), radius: 6, x: 0, y: 3)
                     }
                 }
                 
@@ -134,7 +137,8 @@ struct MedicationCardView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
                         .background(Color(red: 0.9, green: 0.95, blue: 1.0))
-                        .cornerRadius(12)
+                        .clipShape(Capsule())
+                        .shadow(color: Color.black.opacity(0.12), radius: 6, x: 0, y: 3)
                 }
             }
             .padding(.top, 10)
