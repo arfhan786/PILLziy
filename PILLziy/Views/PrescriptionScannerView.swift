@@ -12,6 +12,17 @@ import AVFoundation
 private let scanFormGray = Color(white: 0.94)
 private let scanCellGray = Color(white: 0.97)
 
+/// Redraws image with orientation applied so Vision receives correctly oriented pixels.
+private func normalizedImageForOCR(_ image: UIImage) -> CGImage? {
+    guard image.imageOrientation != .up else { return image.cgImage }
+    let size = image.size
+    let format = UIGraphicsImageRendererFormat()
+    format.scale = image.scale
+    let renderer = UIGraphicsImageRenderer(size: size, format: format)
+    let normalized = renderer.image { _ in image.draw(at: .zero) }
+    return normalized.cgImage
+}
+
 struct PrescriptionScannerView: View {
     @EnvironmentObject var medicationStore: MedicationStore
     @State private var showScanner = false
@@ -277,7 +288,7 @@ private final class CameraScanViewController: UIViewController {
     
     private func setupCamera() {
         let session = AVCaptureSession()
-        session.sessionPreset = .high
+        session.sessionPreset = .photo
         
         guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
               let input = try? AVCaptureDeviceInput(device: device),
@@ -340,7 +351,8 @@ private final class CameraScanViewController: UIViewController {
     }
     
     private func extractText(from image: UIImage, completion: @escaping (String) -> Void) {
-        guard let cgImage = image.cgImage else {
+        let cgImage = normalizedImageForOCR(image) ?? image.cgImage
+        guard let cg = cgImage else {
             DispatchQueue.main.async { completion("") }
             return
         }
@@ -354,9 +366,14 @@ private final class CameraScanViewController: UIViewController {
             DispatchQueue.main.async { completion(text) }
         }
         request.recognitionLevel = .accurate
+        request.usesLanguageCorrection = true
+        request.recognitionLanguages = ["en-US"]
+        if #available(iOS 16.0, *) {
+            request.automaticallyDetectsLanguage = false
+        }
         DispatchQueue.global(qos: .userInitiated).async {
             do {
-                let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+                let handler = VNImageRequestHandler(cgImage: cg, options: [:])
                 try handler.perform([request])
             } catch {
                 DispatchQueue.main.async { completion("") }
