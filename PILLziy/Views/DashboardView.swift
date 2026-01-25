@@ -7,6 +7,26 @@
 
 import SwiftUI
 
+private struct InnerMorphismOverlay: View {
+    var strength: Double = 0.12
+    
+    var body: some View {
+        Capsule()
+            .fill(
+                LinearGradient(
+                    colors: [
+                        Color.black.opacity(strength),
+                        Color.black.opacity(strength * 0.25),
+                        Color.clear
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .allowsHitTesting(false)
+    }
+}
+
 struct DashboardView: View {
     @EnvironmentObject var medicationStore: MedicationStore
     @State private var selectedMedication: Medication?
@@ -71,10 +91,34 @@ struct MedicationCardView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            // Pill Video (PILLziyVideo) – autoplays and loops on appear
-            LoopingPillVideoView()
-                .frame(height: 260)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+            // Pill Video with Log Symptoms overlay
+            ZStack(alignment: .topTrailing) {
+                LoopingPillVideoView()
+                    .frame(height: 260)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                
+                Button(action: {
+                    // Log symptoms action
+                }) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "plus")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(.blue)
+                        Text("Log Symptoms")
+                            .font(.system(size: 15, weight: .medium))
+                            .foregroundColor(Color(white: 0.2))
+                    }
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 16)
+                    .background(Color.white)
+                    .overlay(InnerMorphismOverlay())
+                    .clipShape(Capsule())
+                    .shadow(color: Color.black.opacity(0.18), radius: 10, x: 0, y: 4)
+                }
+                .padding(.top, 8)
+                .padding(.trailing, 8)
+                .offset(x: 28, y: -30)
+            }
             
             // Medication name
             Text(medication.name.uppercased())
@@ -104,6 +148,7 @@ struct MedicationCardView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
                         .background(Color.blue)
+                        .overlay(InnerMorphismOverlay(strength: 0.2))
                         .clipShape(Capsule())
                         .shadow(color: Color.black.opacity(0.15), radius: 6, x: 0, y: 3)
                     }
@@ -122,6 +167,7 @@ struct MedicationCardView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
                         .background(Color.red)
+                        .overlay(InnerMorphismOverlay(strength: 0.2))
                         .clipShape(Capsule())
                         .shadow(color: Color.black.opacity(0.15), radius: 6, x: 0, y: 3)
                     }
@@ -137,6 +183,7 @@ struct MedicationCardView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
                         .background(Color(red: 0.9, green: 0.95, blue: 1.0))
+                        .overlay(InnerMorphismOverlay(strength: 0.18))
                         .clipShape(Capsule())
                         .shadow(color: Color.black.opacity(0.12), radius: 6, x: 0, y: 3)
                 }
