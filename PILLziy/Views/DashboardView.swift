@@ -27,12 +27,15 @@ private struct InnerMorphismOverlay: View {
     }
 }
 
+private let fabGray = Color(white: 0.94)
+
 struct DashboardView: View {
     @EnvironmentObject var medicationStore: MedicationStore
     @State private var selectedMedication: Medication?
+    @State private var showPharmacyHint = false
     
     var body: some View {
-        ZStack {
+        ZStack(alignment: .bottomTrailing) {
             Color.white
                 .ignoresSafeArea()
             
@@ -77,6 +80,41 @@ struct DashboardView: View {
                 
                 Spacer()
             }
+            
+            // Bottom-right round + button with pharmacy hint
+            HStack(alignment: .center, spacing: 0) {
+                Button(action: {
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        showPharmacyHint.toggle()
+                    }
+                }) {
+                    Image(systemName: "plus")
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundColor(.primary)
+                        .frame(width: 56, height: 56)
+                        .background(fabGray)
+                        .overlay(InnerMorphismOverlay(strength: 0.15))
+                        .clipShape(Circle())
+                        .shadow(color: Color.black.opacity(0.12), radius: 8, x: 0, y: 4)
+                }
+                .buttonStyle(.plain)
+                
+                if showPharmacyHint {
+                    Text("Check whats new in your Pharmacy")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.primary)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .background(fabGray)
+                        .overlay(InnerMorphismOverlay())
+                        .clipShape(Capsule())
+                        .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 3)
+                        .padding(.leading, 10)
+                        .transition(.opacity.combined(with: .move(edge: .trailing)))
+                }
+            }
+            .padding(.trailing, 20)
+            .padding(.bottom, 24)
         }
         .onAppear {
             if selectedMedication == nil && !medicationStore.medications.isEmpty {
