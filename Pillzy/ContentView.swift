@@ -8,17 +8,29 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var medicationStore: MedicationStore
+    @State private var showScanner = false
+    @State private var navigateToDashboard = false
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            if medicationStore.medications.isEmpty {
+                PrescriptionScannerView()
+                    .environmentObject(medicationStore)
+                    .onChange(of: medicationStore.medications.count) { oldValue, newValue in
+                        if newValue > 0 {
+                            navigateToDashboard = true
+                        }
+                    }
+            } else {
+                DashboardView()
+                    .environmentObject(medicationStore)
+            }
         }
-        .padding()
     }
 }
 
 #Preview {
     ContentView()
+        .environmentObject(MedicationStore())
 }

@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct PillzyApp: App {
+    @StateObject private var medicationStore = MedicationStore()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(medicationStore)
         }
     }
 }
