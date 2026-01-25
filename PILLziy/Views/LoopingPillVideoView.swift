@@ -20,10 +20,20 @@ struct LoopingPillVideoView: UIViewRepresentable {
     }
 }
 
+private let videoPlayedKey = "PILLziyVideoHasBeenPlayed"
+
 final class PillVideoUIView: UIView {
     private var player: AVPlayer?
     private var endObserver: NSObjectProtocol?
     private let playerLayer = AVPlayerLayer()
+
+    private static var hasBeenPlayed: Bool {
+        get { UserDefaults.standard.bool(forKey: videoPlayedKey) }
+        set {
+            UserDefaults.standard.set(newValue, forKey: videoPlayedKey)
+            UserDefaults.standard.synchronize()
+        }
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -63,6 +73,13 @@ final class PillVideoUIView: UIView {
         player = avPlayer
         playerLayer.player = avPlayer
         avPlayer.isMuted = false
+
+        if Self.hasBeenPlayed {
+            seekToLastFrameAndPauseWhenReady(avPlayer, item: playerItem, asset: asset)
+            return
+        }
+
+        Self.hasBeenPlayed = true
         avPlayer.play()
 
         endObserver = NotificationCenter.default.addObserver(
@@ -74,6 +91,21 @@ final class PillVideoUIView: UIView {
         }
     }
 
+    private func seekToLastFrameAndPauseWhenReady(_ avPlayer: AVPlayer, item: AVPlayerItem, asset: AVAsset) {
+        asset.loadValuesAsynchronously(forKeys: ["duration"]) { [weak self] in
+            var error: NSError?
+            guard asset.statusOfValue(forKey: "duration", error: &error) == .loaded,
+                  let player = self?.player else { return }
+            let duration = asset.duration
+            let seconds = CMTimeGetSeconds(duration)
+            guard seconds.isFinite, seconds > 0 else { return }
+            let seekTime = CMTime(seconds: max(0, seconds - 0.03), preferredTimescale: 600)
+            player.seek(to: seekTime, toleranceBefore: .zero, toleranceAfter: .zero) { _ in
+                DispatchQueue.main.async { player.pause() }
+            }
+        }
+    }
+
     private func holdOnLastFrame() {
         guard let avPlayer = player,
               let item = avPlayer.currentItem else { return }
@@ -82,6 +114,7 @@ final class PillVideoUIView: UIView {
         let seconds = CMTimeGetSeconds(duration)
         guard seconds.isFinite, seconds > 0 else {
             avPlayer.pause()
+            removeEndObserver()
             return
         }
 

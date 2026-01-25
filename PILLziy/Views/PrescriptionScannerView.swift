@@ -18,26 +18,28 @@ struct PrescriptionScannerView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            Text("Scan Prescription")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .padding()
+            Spacer(minLength: 0)
             
-            if let image = scannedImage {
-                Image(uiImage: image)
+            HStack(spacing: -4) {
+                Image("Logo")
                     .resizable()
-                    .scaledToFit()
-                    .frame(maxHeight: 300)
-                    .cornerRadius(12)
-                    .padding()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: 100)
+                    .offset(y: -18)
+                Text("ILLziy")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.black)
+                    .padding(.leading, -4)
             }
-            
+            .frame(maxWidth: .infinity)
+
             Button(action: {
                 showScanner = true
             }) {
                 HStack {
                     Image(systemName: "camera.fill")
-                    Text("Scan Prescription")
+                    Text("Scan Your Prescription")
                 }
                 .font(.headline)
                 .foregroundColor(.white)
@@ -47,20 +49,28 @@ struct PrescriptionScannerView: View {
                 .cornerRadius(12)
             }
             .padding(.horizontal)
-            .sheet(isPresented: $showScanner) {
-                DocumentScannerView(scannedImage: $scannedImage, extractedText: $extractedText)
+
+            if let image = scannedImage {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxHeight: 300)
+                    .cornerRadius(12)
+                    .padding()
             }
             
             if !extractedText.isEmpty {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .center, spacing: 8) {
                     Text("Extracted Text:")
                         .font(.headline)
                     Text(extractedText)
                         .font(.body)
+                        .multilineTextAlignment(.center)
                         .padding()
                         .background(Color.gray.opacity(0.1))
                         .cornerRadius(8)
                 }
+                .frame(maxWidth: .infinity)
                 .padding()
                 
                 Button(action: {
@@ -76,6 +86,11 @@ struct PrescriptionScannerView: View {
                 }
                 .padding(.horizontal)
             }
+            
+            Spacer(minLength: 0)
+        }
+        .sheet(isPresented: $showScanner) {
+            DocumentScannerView(scannedImage: $scannedImage, extractedText: $extractedText)
         }
         .sheet(isPresented: $showMedicationForm) {
             MedicationFormView(
