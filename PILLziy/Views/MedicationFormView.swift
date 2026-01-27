@@ -235,25 +235,37 @@ struct MedicationFormView: View {
                 }
             }
             if let img = scannedImage {
-                pillColor = extractDominantColor(from: img)
+                DispatchQueue.global(qos: .userInitiated).async {
+                    let color = extractDominantColor(from: img)
+                    DispatchQueue.main.async {
+                        pillColor = color
+                    }
+                }
             }
         }
     }
     
     private func saveMedication() {
-        var imageData: Data? = nil
-        if let image = scannedImage {
-            imageData = image.jpegData(compressionQuality: 0.8)
+        let name = medicationName.isEmpty ? "TYLENOL 500" : medicationName
+        let dose = dosage.isEmpty ? "500mg" : dosage
+        let freq = frequency
+        let img = scannedImage
+
+        DispatchQueue.global(qos: .userInitiated).async { [medicationStore] in
+            var imageData: Data?
+            if let image = img {
+                imageData = image.jpegData(compressionQuality: 0.8)
+            }
+            let medication = Medication(
+                name: name,
+                dosage: dose,
+                frequency: freq,
+                labelImageData: imageData
+            )
+            DispatchQueue.main.async {
+                medicationStore.addMedication(medication)
+                dismiss()
+            }
         }
-        
-        let medication = Medication(
-            name: medicationName.isEmpty ? "TYLENOL 500" : medicationName,
-            dosage: dosage.isEmpty ? "500mg" : dosage,
-            frequency: frequency,
-            labelImageData: imageData
-        )
-        
-        medicationStore.addMedication(medication)
-        dismiss()
     }
 }

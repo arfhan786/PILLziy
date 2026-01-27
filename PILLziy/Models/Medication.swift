@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Medication: Identifiable, Codable {
+struct Medication: Identifiable, Codable, Hashable {
     let id: UUID
     var name: String
     var dosage: String
@@ -23,4 +23,7 @@ struct Medication: Identifiable, Codable {
         self.labelImageData = labelImageData
         self.createdAt = Date()
     }
+    
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
+    static func == (lhs: Medication, rhs: Medication) -> Bool { lhs.id == rhs.id }
 }

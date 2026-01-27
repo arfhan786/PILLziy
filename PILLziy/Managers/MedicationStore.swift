@@ -17,6 +17,13 @@ class MedicationStore: ObservableObject {
         loadMedications()
     }
     
+    private func loadMedications() {
+        if let data = UserDefaults.standard.data(forKey: medicationsKey),
+           let decoded = try? JSONDecoder().decode([Medication].self, from: data) {
+            medications = decoded
+        }
+    }
+    
     func addMedication(_ medication: Medication) {
         medications.append(medication)
         saveMedications()
@@ -40,12 +47,6 @@ class MedicationStore: ObservableObject {
         }
     }
     
-    private func loadMedications() {
-        if let data = UserDefaults.standard.data(forKey: medicationsKey),
-           let decoded = try? JSONDecoder().decode([Medication].self, from: data) {
-            medications = decoded
-        }
-    }
 }
 
 
@@ -57,4 +58,4 @@ class MedicationStore: ObservableObject {
 //
 //
 //
-//1. user PILLziyVideo attached
+//1. user DashboardVideo attached

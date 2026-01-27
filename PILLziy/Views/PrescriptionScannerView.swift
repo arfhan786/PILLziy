@@ -371,33 +371,35 @@ private final class CameraScanViewController: UIViewController {
         if #available(iOS 16.0, *) {
             request.automaticallyDetectsLanguage = false
         }
-        DispatchQueue.global(qos: .userInitiated).async {
-            do {
-                let handler = VNImageRequestHandler(cgImage: cg, options: [:])
-                try handler.perform([request])
-            } catch {
-                DispatchQueue.main.async { completion("") }
-            }
+        do {
+            let handler = VNImageRequestHandler(cgImage: cg, options: [:])
+            try handler.perform([request])
+        } catch {
+            DispatchQueue.main.async { completion("") }
         }
     }
 }
 
 extension CameraScanViewController: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        defer {
-            DispatchQueue.main.async { [weak self] in
-                self?.isCapturing = false
-                self?.captureButton?.isEnabled = true
-            }
+        DispatchQueue.main.async { [weak self] in
+            self?.isCapturing = false
+            self?.captureButton?.isEnabled = true
         }
-        guard error == nil,
-              let data = photo.fileDataRepresentation(),
-              let image = UIImage(data: data) else {
+        guard error == nil else { return }
+        guard let data = photo.fileDataRepresentation() else {
             DispatchQueue.main.async { [weak self] in self?.onCancel() }
             return
         }
-        extractText(from: image) { [weak self] text in
-            self?.onCapture(image, text)
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self else { return }
+            guard let image = UIImage(data: data) else {
+                DispatchQueue.main.async { self.onCancel() }
+                return
+            }
+            self.extractText(from: image) { text in
+                self.onCapture(image, text)
+            }
         }
     }
 }

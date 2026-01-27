@@ -47,35 +47,37 @@ final class PillVideoUIView: UIView {
     }
 
     func setupPlayer() {
-        let url = Bundle.main.url(forResource: "PILLziyVideo", withExtension: "MP4", subdirectory: "Resources")
-            ?? Bundle.main.url(forResource: "PILLziyVideo", withExtension: "mp4", subdirectory: "Resources")
-            ?? Bundle.main.url(forResource: "PILLziyVideo", withExtension: "MP4", subdirectory: "Videos")
-            ?? Bundle.main.url(forResource: "PILLziyVideo", withExtension: "mp4", subdirectory: "Videos")
-            ?? Bundle.main.url(forResource: "PILLziyVideo", withExtension: "MP4")
-            ?? Bundle.main.url(forResource: "PILLziyVideo", withExtension: "mp4")
+        let url = Bundle.main.url(forResource: "DashboardVideo", withExtension: "MP4", subdirectory: "Resources")
+            ?? Bundle.main.url(forResource: "DashboardVideo", withExtension: "mp4", subdirectory: "Resources")
+            ?? Bundle.main.url(forResource: "DashboardVideo", withExtension: "MP4", subdirectory: "Videos")
+            ?? Bundle.main.url(forResource: "DashboardVideo", withExtension: "mp4", subdirectory: "Videos")
+            ?? Bundle.main.url(forResource: "DashboardVideo", withExtension: "MP4")
+            ?? Bundle.main.url(forResource: "DashboardVideo", withExtension: "mp4")
             ?? Bundle.main.url(forResource: "Pill-video 2", withExtension: "MP4", subdirectory: "Resources")
             ?? Bundle.main.url(forResource: "Pill-video 2", withExtension: "MP4")
         guard let url = url else { return }
 
-        let session = AVAudioSession.sharedInstance()
-        try? session.setCategory(.playback, mode: .default)
-        try? session.setActive(true)
-
-        let asset = AVAsset(url: url)
-        let playerItem = AVPlayerItem(asset: asset)
-        let avPlayer = AVPlayer(playerItem: playerItem)
-
-        player = avPlayer
-        playerLayer.player = avPlayer
-        avPlayer.isMuted = false
-        avPlayer.play()
-
-        endObserver = NotificationCenter.default.addObserver(
-            forName: AVPlayerItem.didPlayToEndTimeNotification,
-            object: playerItem,
-            queue: .main
-        ) { [weak self] _ in
-            self?.holdOnLastFrame()
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self else { return }
+            let session = AVAudioSession.sharedInstance()
+            try? session.setCategory(.playback, mode: .default)
+            try? session.setActive(true)
+            let asset = AVAsset(url: url)
+            let playerItem = AVPlayerItem(asset: asset)
+            let avPlayer = AVPlayer(playerItem: playerItem)
+            DispatchQueue.main.async {
+                self.player = avPlayer
+                self.playerLayer.player = avPlayer
+                avPlayer.isMuted = false
+                avPlayer.play()
+                self.endObserver = NotificationCenter.default.addObserver(
+                    forName: AVPlayerItem.didPlayToEndTimeNotification,
+                    object: playerItem,
+                    queue: .main
+                ) { [weak self] _ in
+                    self?.holdOnLastFrame()
+                }
+            }
         }
     }
 

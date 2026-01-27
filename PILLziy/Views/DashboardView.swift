@@ -84,9 +84,7 @@ struct DashboardView: View {
             // Bottom-right round + button with pharmacy hint
             HStack(alignment: .center, spacing: 0) {
                 Button(action: {
-                    withAnimation(.easeInOut(duration: 0.25)) {
-                        showPharmacyHint.toggle()
-                    }
+                    showPharmacyHint.toggle()
                 }) {
                     Image(systemName: "plus")
                         .font(.system(size: 22, weight: .semibold))
@@ -100,7 +98,7 @@ struct DashboardView: View {
                 .buttonStyle(.plain)
                 
                 if showPharmacyHint {
-                    Text("Check whats new in your Pharmacy")
+                    Text("Log Symptoms")
                         .font(.system(size: 14, weight: .medium))
                         .foregroundColor(.primary)
                         .padding(.horizontal, 14)
@@ -113,6 +111,7 @@ struct DashboardView: View {
                         .transition(.opacity.combined(with: .move(edge: .trailing)))
                 }
             }
+            .animation(.easeOut(duration: 0.2), value: showPharmacyHint)
             .padding(.trailing, 20)
             .padding(.bottom, 24)
         }
@@ -129,34 +128,11 @@ struct MedicationCardView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            // Pill Video with Log Symptoms overlay
-            ZStack(alignment: .topTrailing) {
-                LoopingPillVideoView()
-                    .frame(height: 260)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                
-                Button(action: {
-                    // Log symptoms action
-                }) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "plus")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundColor(.blue)
-                        Text("Log Symptoms")
-                            .font(.system(size: 15, weight: .medium))
-                            .foregroundColor(Color(white: 0.2))
-                    }
-                    .padding(.vertical, 10)
-                    .padding(.horizontal, 16)
-                    .background(Color.white)
-                    .overlay(InnerMorphismOverlay())
-                    .clipShape(Capsule())
-                    .shadow(color: Color.black.opacity(0.18), radius: 10, x: 0, y: 4)
-                }
-                .padding(.top, 8)
-                .padding(.trailing, 8)
-                .offset(x: 28, y: -30)
-            }
+            // Pill Video
+            LoopingPillVideoView()
+                .frame(maxWidth: .infinity)
+                .frame(height: 260)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
             
             // Medication name
             Text(medication.name.uppercased())
@@ -170,31 +146,10 @@ struct MedicationCardView: View {
             
             // Action buttons
             VStack(spacing: 12) {
-                // Take Dose and Skip Dose buttons
+                // Skip Dose and Take Dose buttons
                 HStack(spacing: 12) {
-                    // Take Dose button (blue)
-                    Button(action: {
-                        // Take dose action
-                    }) {
-                        HStack {
-                            Image(systemName: "checkmark")
-                                .font(.system(size: 18, weight: .semibold))
-                            Text("Take Dose")
-                                .font(.system(size: 16, weight: .semibold))
-                        }
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(Color.blue)
-                        .overlay(InnerMorphismOverlay(strength: 0.2))
-                        .clipShape(Capsule())
-                        .shadow(color: Color.black.opacity(0.15), radius: 6, x: 0, y: 3)
-                    }
-                    
                     // Skip Dose button (red)
-                    Button(action: {
-                        // Skip dose action
-                    }) {
+                    NavigationLink(destination: SkipDoseImpactView(medication: medication)) {
                         HStack {
                             Image(systemName: "xmark")
                                 .font(.system(size: 18, weight: .semibold))
@@ -209,21 +164,25 @@ struct MedicationCardView: View {
                         .clipShape(Capsule())
                         .shadow(color: Color.black.opacity(0.15), radius: 6, x: 0, y: 3)
                     }
-                }
-                
-                // How to take it button (light blue/grey)
-                Button(action: {
-                    // How to take it action
-                }) {
-                    Text("How to take it?")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.black)
+                    .buttonStyle(.plain)
+                    
+                    // Take Dose button (blue)
+                    NavigationLink(destination: TakeDoseView(medication: medication)) {
+                        HStack {
+                            Image(systemName: "checkmark")
+                                .font(.system(size: 18, weight: .semibold))
+                            Text("Take Dose")
+                                .font(.system(size: 16, weight: .semibold))
+                        }
+                        .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .background(Color(red: 0.9, green: 0.95, blue: 1.0))
-                        .overlay(InnerMorphismOverlay(strength: 0.18))
+                        .background(Color.blue)
+                        .overlay(InnerMorphismOverlay(strength: 0.2))
                         .clipShape(Capsule())
-                        .shadow(color: Color.black.opacity(0.12), radius: 6, x: 0, y: 3)
+                        .shadow(color: Color.black.opacity(0.15), radius: 6, x: 0, y: 3)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
             .padding(.top, 10)
