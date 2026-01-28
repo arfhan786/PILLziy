@@ -173,7 +173,7 @@ struct VomitView: View {
                                     .frame(width: item.title == "Vomit" ? 22 : 34,
                                            height: item.title == "Vomit" ? 22 : 34)
                             }
-                            .frame(width: 72, height: 72)
+                            .frame(width: 72, height: 60)
 
                             Text(item.title)
                                 .font(.system(size: 13, weight: .semibold))
