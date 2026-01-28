@@ -27,8 +27,10 @@ final class PillVideoUIView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = .clear
         layer.addSublayer(playerLayer)
         playerLayer.videoGravity = .resizeAspect
+        playerLayer.backgroundColor = UIColor.clear.cgColor
     }
 
     required init?(coder: NSCoder) {
