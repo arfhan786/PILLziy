@@ -28,6 +28,34 @@ private struct TakeDoseMorphismOverlay: View {
     }
 }
 
+private struct BlueWaveDot: View {
+    @State private var animate = false
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(Color.blue.opacity(0.35))
+                .scaleEffect(animate ? 1.15 : 0.9)
+                .opacity(animate ? 0 : 1)
+
+            Circle()
+                .fill(Color.blue.opacity(0.25))
+                .scaleEffect(animate ? 1.0 : 0.9)
+                .opacity(animate ? 0.5 : 0.9)
+
+            Circle()
+                .fill(Color.blue)
+                .frame(width: 14, height: 14)
+        }
+        .frame(width: 40, height: 40)
+        .onAppear {
+            withAnimation(.easeOut(duration: 1.6).repeatForever(autoreverses: false)) {
+                animate = true
+            }
+        }
+    }
+}
+
 struct TakeDoseView: View {
     let medication: Medication
     @Environment(\.dismiss) var dismiss
@@ -48,14 +76,24 @@ struct TakeDoseView: View {
                         .frame(maxWidth: 260)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                         .scaleEffect(2.1, anchor: .bottomLeading)
+
+                    // Blue wave dot near body
+                    BlueWaveDot()
+                        .offset(x: 40, y: -40)
                 }
                 .offset(x: -10)
 
                 Spacer(minLength: 8)
 
-                LoopingPillVideoView(videoName: "TakeADoseVideo", isPlaying: isPillVideoPlaying)
-                    .frame(width: 150, height: 150)
-                    .background(Color.clear)
+                ZStack(alignment: .topTrailing) {
+                    LoopingPillVideoView(videoName: "TakeADoseVideo", isPlaying: isPillVideoPlaying)
+                        .frame(width: 150, height: 150)
+                        .background(Color.clear)
+
+                    // Second blue wave dot near pill
+                    BlueWaveDot()
+                        .offset(x: 12, y: -12)
+                }
             }
             .padding(.horizontal, 20)
             .onAppear { isPillVideoPlaying = !hasStoppedVideo }
