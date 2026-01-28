@@ -27,6 +27,17 @@ private struct BodyMapMorphismOverlay: View {
     }
 }
 
+private struct SymptomTapStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(Color(white: 0.9))
+                    .opacity(configuration.isPressed ? 1 : 0)
+            )
+    }
+}
+
 private struct GradientPainSlider: View {
     @Binding var value: Double // 0...1
 
@@ -89,6 +100,7 @@ struct BodyMapView: View {
                     Text("Tap where it hurts.")
                         .font(.system(size: 20, weight: .semibold))
                         .foregroundColor(.primary)
+                        .frame(maxWidth: .infinity, alignment: .center)
                         .padding(.top, 10)
 
                     GradientPainSlider(value: $painLevel)
@@ -96,15 +108,15 @@ struct BodyMapView: View {
                     HStack {
                         Text("Mild")
                             .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.primary)
                         Spacer()
                         Text("Moderate")
                             .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.primary)
                         Spacer()
                         Text("Severe")
                             .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.primary)
                     }
                     .padding(.top, -6)
 
@@ -116,7 +128,7 @@ struct BodyMapView: View {
                                 .aspectRatio(contentMode: .fit)
                                 .frame(maxWidth: 260)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
-                                .scaleEffect(1.05, anchor: .bottomLeading)
+                                .scaleEffect(1.2, anchor: .bottomLeading)
                         }
                         .offset(x: -10)
 
@@ -126,10 +138,10 @@ struct BodyMapView: View {
                             .frame(width: 150, height: 150)
                             .background(Color.clear)
                     }
-                    .padding(.top, 30)
+                    .padding(.top, 18)
                 }
                 .padding(.horizontal, 20)
-                .padding(.bottom, 18)
+                .padding(.bottom, 3)
             }
 
             // Bottom symptom buttons
@@ -173,7 +185,7 @@ struct BodyMapView: View {
                                 .foregroundColor(.primary)
                         }
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(SymptomTapStyle())
                 }
             }
             .padding(.horizontal, 20)
