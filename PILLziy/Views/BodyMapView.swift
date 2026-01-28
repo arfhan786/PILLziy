@@ -130,6 +130,15 @@ struct BodyMapView: View {
                                 .frame(maxWidth: 260)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                                 .scaleEffect(1.2, anchor: .bottomLeading)
+                            
+                            Image("Arm")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxWidth: 260)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                                .offset(x: 30, y: -40)
+                                .zIndex(1)
                         }
                         .offset(x: -10)
 
