@@ -241,7 +241,11 @@ struct BodyMapView: View {
         .background(Color.white)
         .navigationTitle("Body Pain Log")
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear { isVideoPlaying = !hasStoppedVideo }
+        .onAppear {
+            isVideoPlaying = !hasStoppedVideo
+            // Whenever BodyMapView appears, default highlight back to Pain
+            selectedSymptom = "Pain"
+        }
         .onDisappear {
             hasStoppedVideo = true
             isVideoPlaying = false

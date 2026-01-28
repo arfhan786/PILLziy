@@ -98,54 +98,42 @@ struct VomitView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    Text("How Strong?")
-                        .font(.system(size: 20, weight: .semibold))
+            VStack(alignment: .leading, spacing: 16) {
+                Text("How Strong?")
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundColor(.primary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.top, 10)
+
+                GradientPainSlider(value: $painLevel)
+
+                HStack {
+                    Text("Mild")
+                        .font(.system(size: 14, weight: .medium))
                         .foregroundColor(.primary)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.top, 10)
-
-                    GradientPainSlider(value: $painLevel)
-
-                    HStack {
-                        Text("Mild")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(.primary)
-                        Spacer()
-                        Text("Moderate")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(.primary)
-                        Spacer()
-                        Text("Severe")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(.primary)
-                    }
-                    .padding(.top, -6)
-
-                    HStack(alignment: .bottom, spacing: 14) {
-                        ZStack(alignment: .bottomLeading) {
-                            Image("BodyVomiting")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: 260)
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                                .scaleEffect(1.2, anchor: .bottomLeading)
-                        }
-                        .offset(x: -10)
-
-                        Spacer(minLength: 8)
-
-                        LoopingPillVideoView(videoName: "SideEffectVideo", isPlaying: isVideoPlaying)
-                            .frame(width: 150, height: 150)
-                            .background(Color.clear)
-                    }
-                    .padding(.top, 75)
-                    .offset(y: 10)
+                    Spacer()
+                    Text("Moderate")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.primary)
+                    Spacer()
+                    Text("Severe")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.primary)
                 }
-                .padding(.horizontal, 20)
-                .padding(.bottom, -100)
+                .padding(.top, -6)
+
+                Spacer(minLength: 0)
+
+                Image("BodyVomiting")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: 260)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .scaleEffect(1.5)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.bottom, 75)
             }
+            .padding(.horizontal, 20)
 
             // Bottom symptom buttons
             HStack(spacing: 18) {
@@ -153,6 +141,10 @@ struct VomitView: View {
                     Button(action: {
                         hasStoppedVideo = true
                         isVideoPlaying = false
+                        // Tapping Pain from VomitView returns to BodyMapView
+                        if item.title == "Pain" {
+                            dismiss()
+                        }
                     }) {
                         VStack(spacing: 8) {
                             ZStack {
