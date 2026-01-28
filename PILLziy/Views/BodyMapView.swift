@@ -128,7 +128,7 @@ struct BodyMapView: View {
                                 .aspectRatio(contentMode: .fit)
                                 .frame(maxWidth: 260)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
-                                .scaleEffect(1.2, anchor: .bottomLeading)
+                                .scaleEffect(2.1, anchor: .bottomLeading)
                         }
                         .offset(x: -10)
 
@@ -138,10 +138,10 @@ struct BodyMapView: View {
                             .frame(width: 150, height: 150)
                             .background(Color.clear)
                     }
-                    .padding(.top, 18)
+                    .padding(.top, 8)
                 }
                 .padding(.horizontal, 20)
-                .padding(.bottom, 3)
+                .padding(.bottom, 0)
             }
 
             // Bottom symptom buttons

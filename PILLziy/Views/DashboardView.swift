@@ -45,7 +45,7 @@ struct DashboardView: View {
                 // Top bar with name and bell icon
                 HStack {
                     Text("William Davis")
-                        .font(.system(size: 20, weight: .semibold))
+                        .font(.custom("Poppins", size: 20).weight(.bold))
                         .foregroundColor(.black)
                     
                     Spacer()
@@ -55,7 +55,7 @@ struct DashboardView: View {
                         // Notification action
                     }) {
                         Image(systemName: "bell.fill")
-                            .font(.system(size: 20))
+                            .font(.custom("Poppins", size: 20))
                             .foregroundColor(.black)
                     }
                 }
@@ -63,25 +63,23 @@ struct DashboardView: View {
                 .padding(.top, 10)
                 .padding(.bottom, 20)
                 
-                // Main content card
+                // Main content card centered vertically
                 if let medication = selectedMedication ?? medicationStore.medications.first {
                     MedicationCardView(medication: medication, isPillVideoPlaying: $isPillVideoPlaying)
                         .padding(.horizontal, 20)
-                        .padding(.top, 44)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 } else {
                     VStack(spacing: 20) {
                         Text("No medications added")
-                            .font(.headline)
+                            .font(.custom("Poppins", size: 17).weight(.semibold))
                             .foregroundColor(.gray)
                         
                         Text("Scan a prescription to get started")
-                            .font(.subheadline)
+                            .font(.custom("Poppins", size: 15))
                             .foregroundColor(.gray)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                
-                Spacer()
             }
             
             // Bottom-right round + button with pharmacy hint
@@ -91,7 +89,7 @@ struct DashboardView: View {
                     showPharmacyHint.toggle()
                 }) {
                     Image(systemName: "plus")
-                        .font(.system(size: 22, weight: .semibold))
+                        .font(.custom("Poppins", size: 22).weight(.semibold))
                         .foregroundColor(.primary)
                         .frame(width: 56, height: 56)
                         .background(fabGray)
@@ -104,7 +102,7 @@ struct DashboardView: View {
                 if showPharmacyHint {
                     NavigationLink(destination: BodyMapView()) {
                         Text("How does your body feel today?")
-                            .font(.system(size: 14, weight: .medium))
+                            .font(.custom("Poppins", size: 14).weight(.medium))
                             .foregroundColor(.primary)
                             .padding(.horizontal, 14)
                             .padding(.vertical, 10)
@@ -154,54 +152,80 @@ struct MedicationCardView: View {
             // Medication name and frequency
             HStack {
                 Text(medication.name.uppercased())
-                    .font(.system(size: 24, weight: .bold))
+                    .font(.custom("Poppins", size: 24).weight(.heavy))
                     .foregroundColor(.black)
                 
                 Text(medication.frequency)
-                    .font(.system(size: 16, weight: .regular))
+                    .font(.custom("Poppins", size: 16))
                     .foregroundColor(.gray)
             }
             
             // Action buttons
             VStack(spacing: 12) {
-                // Skip Dose and Take Dose buttons
+                // Skip Dose and Take Dose buttons in one line
                 HStack(spacing: 12) {
                     // Skip Dose button (red)
                     NavigationLink(destination: SkipDoseImpactView(medication: medication)) {
-                        HStack {
+                        HStack(alignment: .center, spacing: 6) {
                             Image(systemName: "xmark")
-                                .font(.system(size: 18, weight: .semibold))
-                            Text("Skip Dose")
-                                .font(.system(size: 16, weight: .semibold))
+                                .font(.custom("Poppins", size: 16).weight(.semibold))
+                            Text("Skip")
+                                .font(.custom("Poppins", size: 16).weight(.semibold))
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.8)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(Color.red)
-                        .overlay(InnerMorphismOverlay(strength: 0.2))
-                        .clipShape(Capsule())
-                        .shadow(color: Color.black.opacity(0.15), radius: 6, x: 0, y: 3)
+                        .padding(.horizontal, 40)
+                        .padding(.vertical, 8)
+                        .frame(maxWidth: .infinity, minHeight: 60, maxHeight: 60, alignment: .center)
+                        .background(
+                            LinearGradient(
+                                stops: [
+                                    Gradient.Stop(color: Color(red: 1, green: 0.27, blue: 0.27), location: 0.00),
+                                    Gradient.Stop(color: Color(red: 1, green: 0.3, blue: 0.3), location: 1.00),
+                                ],
+                                startPoint: UnitPoint(x: 0, y: 0.5),
+                                endPoint: UnitPoint(x: 1, y: 0.5)
+                            )
+                        )
+                        .cornerRadius(420.30264)
+                        .shadow(color: Color(red: 1, green: 0.27, blue: 0.27).opacity(0.26), radius: 6.5, x: 8, y: 8)
+                        .shadow(color: .white, radius: 6.5, x: -8, y: -8)
                     }
                     .buttonStyle(.plain)
                     .simultaneousGesture(TapGesture().onEnded {
                         isPillVideoPlaying = false
                     })
                     
-                    // Take Dose button (blue)
+                    // Take Dose button (blue gradient, morphism style)
                     NavigationLink(destination: TakeDoseView(medication: medication)) {
-                        HStack {
+                        HStack(alignment: .center, spacing: 6) {
                             Image(systemName: "checkmark")
-                                .font(.system(size: 18, weight: .semibold))
-                            Text("Take Dose")
-                                .font(.system(size: 16, weight: .semibold))
+                                .font(.custom("Poppins", size: 16).weight(.semibold))
+                            Text("Take")
+                                .font(.custom("Poppins", size: 16).weight(.semibold))
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.8)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(Color.blue)
-                        .overlay(InnerMorphismOverlay(strength: 0.2))
-                        .clipShape(Capsule())
-                        .shadow(color: Color.black.opacity(0.15), radius: 6, x: 0, y: 3)
+                        .padding(.horizontal, 40)
+                        .padding(.vertical, 8)
+                        .frame(maxWidth: .infinity, minHeight: 60, maxHeight: 60, alignment: .center)
+                        .background(
+                            LinearGradient(
+                                stops: [
+                                    Gradient.Stop(color: Color(red: 0.36, green: 0.51, blue: 1), location: 0.00),
+                                    Gradient.Stop(color: Color(red: 0.33, green: 0.49, blue: 1), location: 1.00),
+                                ],
+                                startPoint: UnitPoint(x: 0, y: 0.5),
+                                endPoint: UnitPoint(x: 1, y: 0.5)
+                            )
+                        )
+                        .cornerRadius(420.30264)
+                        .shadow(color: Color(red: 0.26, green: 0.43, blue: 1).opacity(0.26), radius: 6.5, x: 8, y: 8)
+                        .shadow(color: .white, radius: 6.5, x: -8, y: -8)
                     }
                     .buttonStyle(.plain)
                     .simultaneousGesture(TapGesture().onEnded {
