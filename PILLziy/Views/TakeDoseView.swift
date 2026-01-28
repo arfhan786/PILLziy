@@ -121,6 +121,13 @@ private struct ArmImageWithGreenGlow: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 640, height: 640)
+
+            // Top green glow halo that fades in/out
+            Circle()
+                .fill(takeDoseGreen.opacity(glowOpacity))
+                .frame(width: 190, height: 95)
+                .blur(radius: 25)
+                .offset(x: -20, y: -300)
         }
         .onAppear {
             // Continuously fade in and out only the green glow (from 0.3 to 0.9) - faster animation
