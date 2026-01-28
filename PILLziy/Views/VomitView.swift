@@ -1,15 +1,16 @@
 //
-//  BodyMapView.swift
+//  VomitView.swift
 //  PILLziy
 //
-//  Created by Arfhan Ahmad on 1/24/26.
+//  Created by Arfhan Ahmad on 1/28/26.
 //
+
 
 import SwiftUI
 
 private let bodyMapMorphismGray = Color(white: 0.97)
 
-private struct BodyMapMorphismOverlay: View {
+private struct VomitMapMorphismOverlay: View {
     var body: some View {
         RoundedRectangle(cornerRadius: 18)
             .fill(
@@ -81,11 +82,12 @@ private struct GradientPainSlider: View {
     }
 }
 
-struct BodyMapView: View {
+struct VomitView: View {
+    @Environment(\.dismiss) private var dismiss
     @State private var painLevel: Double = 0.25
     @State private var isVideoPlaying = true
     @State private var hasStoppedVideo = false
-    @State private var selectedSymptom: String? = "Pain"
+    @State private var selectedSymptom: String? = "Vomit"
 
     private let symptoms: [(image: String, title: String)] = [
         ("Pain", "Pain"),
@@ -98,7 +100,7 @@ struct BodyMapView: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("Tap where it hurts.")
+                    Text("How Strong?")
                         .font(.system(size: 20, weight: .semibold))
                         .foregroundColor(.primary)
                         .frame(maxWidth: .infinity, alignment: .center)
@@ -122,9 +124,8 @@ struct BodyMapView: View {
                     .padding(.top, -6)
 
                     HStack(alignment: .bottom, spacing: 14) {
-                        // Body image (same styling as Take Dose flow)
                         ZStack(alignment: .bottomLeading) {
-                            Image("Take dose")
+                            Image("BodyVomiting")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(maxWidth: 260)
@@ -149,98 +150,67 @@ struct BodyMapView: View {
             // Bottom symptom buttons
             HStack(spacing: 18) {
                 ForEach(Array(symptoms.enumerated()), id: \.offset) { _, item in
-                    if item.title == "Vomit" {
-                        NavigationLink(destination: VomitView()) {
-                            VStack(spacing: 8) {
-                                ZStack {
-                                    Circle()
-                                        .fill(selectedSymptom == item.title ? Color.red : Color.white)
-                                        .overlay(
-                                            Circle()
-                                                .fill(
-                                                    LinearGradient(
-                                                        colors: [
-                                                            Color.black.opacity(0.06),
-                                                            Color.black.opacity(0.02),
-                                                            Color.clear
-                                                        ],
-                                                        startPoint: .topLeading,
-                                                        endPoint: .bottomTrailing
-                                                    )
+                    Button(action: {
+                        hasStoppedVideo = true
+                        isVideoPlaying = false
+                    }) {
+                        VStack(spacing: 8) {
+                            ZStack {
+                                Circle()
+                                    .fill(item.title == "Vomit" ? Color.red : Color.white)
+                                    .overlay(
+                                        Circle()
+                                            .fill(
+                                                LinearGradient(
+                                                    colors: [
+                                                        Color.black.opacity(0.06),
+                                                        Color.black.opacity(0.02),
+                                                        Color.clear
+                                                    ],
+                                                    startPoint: .topLeading,
+                                                    endPoint: .bottomTrailing
                                                 )
-                                                .allowsHitTesting(false)
-                                        )
-                                        .shadow(color: Color.black.opacity(0.10), radius: 10, x: 0, y: 6)
+                                            )
+                                            .allowsHitTesting(false)
+                                    )
+                                    .shadow(color: Color.black.opacity(0.10), radius: 10, x: 0, y: 6)
 
-                                    Image(item.image)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 22, height: 22)
-                                }
-                                .frame(width: 72, height: 72)
-
-                                Text(item.title)
-                                    .font(.system(size: 13, weight: .semibold))
-                                    .foregroundColor(.primary)
+                                Image(item.image)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: item.title == "Vomit" ? 22 : 34,
+                                           height: item.title == "Vomit" ? 22 : 34)
                             }
+                            .frame(width: 72, height: 72)
+
+                            Text(item.title)
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundColor(.primary)
                         }
-                        .buttonStyle(SymptomTapStyle())
-                        .simultaneousGesture(
-                            TapGesture().onEnded {
-                                hasStoppedVideo = true
-                                isVideoPlaying = false
-                                selectedSymptom = "Vomit"
-                            }
-                        )
-                    } else {
-                        Button(action: {
-                            hasStoppedVideo = true
-                            isVideoPlaying = false
-                            selectedSymptom = item.title
-                        }) {
-                            VStack(spacing: 8) {
-                                ZStack {
-                                    Circle()
-                                        .fill(selectedSymptom == item.title ? Color.red : Color.white)
-                                        .overlay(
-                                            Circle()
-                                                .fill(
-                                                    LinearGradient(
-                                                        colors: [
-                                                            Color.black.opacity(0.06),
-                                                            Color.black.opacity(0.02),
-                                                            Color.clear
-                                                        ],
-                                                        startPoint: .topLeading,
-                                                        endPoint: .bottomTrailing
-                                                    )
-                                                )
-                                                .allowsHitTesting(false)
-                                        )
-                                        .shadow(color: Color.black.opacity(0.10), radius: 10, x: 0, y: 6)
-
-                                    Image(item.image)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 34, height: 34)
-                                }
-                                .frame(width: 72, height: 72)
-
-                                Text(item.title)
-                                    .font(.system(size: 13, weight: .semibold))
-                                    .foregroundColor(.primary)
-                            }
-                        }
-                        .buttonStyle(SymptomTapStyle())
                     }
+                    .buttonStyle(SymptomTapStyle())
                 }
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 24)
         }
-        .background(Color.white)
-        .navigationTitle("Body Pain Log")
+        .background(Color.clear)
+        .navigationTitle("Vomit")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    // Pop VomitView and BodyMapView to return to DashboardView
+                    dismiss()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                        dismiss()
+                    }
+                } label: {
+                    Image("NewBack")
+                }
+            }
+        }
         .onAppear { isVideoPlaying = !hasStoppedVideo }
         .onDisappear {
             hasStoppedVideo = true
@@ -251,7 +221,7 @@ struct BodyMapView: View {
 
 #Preview {
     NavigationStack {
-        BodyMapView()
+        VomitView()
     }
 }
 
