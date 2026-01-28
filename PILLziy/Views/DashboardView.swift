@@ -102,17 +102,24 @@ struct DashboardView: View {
                 .buttonStyle(.plain)
                 
                 if showPharmacyHint {
-                    Text("How does your body feel today?")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(.primary)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 10)
-                        .background(fabGray)
-                        .overlay(InnerMorphismOverlay())
-                        .clipShape(Capsule())
-                        .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 3)
-                        .padding(.leading, 10)
-                        .transition(.opacity.combined(with: .move(edge: .trailing)))
+                    NavigationLink(destination: BodyMapView()) {
+                        Text("How does your body feel today?")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(.primary)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 10)
+                            .background(fabGray)
+                            .overlay(InnerMorphismOverlay())
+                            .clipShape(Capsule())
+                            .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 3)
+                            .padding(.leading, 10)
+                    }
+                    .buttonStyle(.plain)
+                    .simultaneousGesture(TapGesture().onEnded {
+                        hasStoppedVideo = true
+                        isPillVideoPlaying = false
+                    })
+                    .transition(.opacity.combined(with: .move(edge: .trailing)))
                 }
             }
             .animation(.easeOut(duration: 0.2), value: showPharmacyHint)
