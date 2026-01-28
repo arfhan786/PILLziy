@@ -9,17 +9,21 @@ import SwiftUI
 import AVFoundation
 
 struct LoopingPillVideoView: UIViewRepresentable {
+    /// Video file name without extension (e.g. "DashboardVideo")
+    var videoName: String = "DashboardVideo"
+
     /// Control playback without removing/hiding the video.
     var isPlaying: Bool = true
 
     func makeUIView(context: Context) -> PillVideoUIView {
         let view = PillVideoUIView()
-        view.setupPlayer()
+        view.setupPlayer(videoName: videoName)
         return view
     }
 
     func updateUIView(_ uiView: PillVideoUIView, context: Context) {
         uiView.layoutPlayerLayer()
+        uiView.setVideoIfNeeded(videoName: videoName)
         uiView.setPlaying(isPlaying)
     }
 }
@@ -27,6 +31,7 @@ struct LoopingPillVideoView: UIViewRepresentable {
 final class PillVideoUIView: UIView {
     private var player: AVPlayer?
     private var endObserver: NSObjectProtocol?
+    private var currentVideoName: String?
     private let playerLayer = AVPlayerLayer()
 
     override init(frame: CGRect) {
@@ -52,13 +57,21 @@ final class PillVideoUIView: UIView {
         layoutPlayerLayer()
     }
 
-    func setupPlayer() {
-        let url = Bundle.main.url(forResource: "DashboardVideo", withExtension: "MP4", subdirectory: "Resources")
-            ?? Bundle.main.url(forResource: "DashboardVideo", withExtension: "mp4", subdirectory: "Resources")
-            ?? Bundle.main.url(forResource: "DashboardVideo", withExtension: "MP4", subdirectory: "Videos")
-            ?? Bundle.main.url(forResource: "DashboardVideo", withExtension: "mp4", subdirectory: "Videos")
-            ?? Bundle.main.url(forResource: "DashboardVideo", withExtension: "MP4")
-            ?? Bundle.main.url(forResource: "DashboardVideo", withExtension: "mp4")
+    func setupPlayer(videoName: String) {
+        currentVideoName = videoName
+        removeEndObserver()
+        player?.pause()
+        player = nil
+        playerLayer.player = nil
+
+        let url = Bundle.main.url(forResource: videoName, withExtension: "MP4", subdirectory: "Resources")
+            ?? Bundle.main.url(forResource: videoName, withExtension: "mp4", subdirectory: "Resources")
+            ?? Bundle.main.url(forResource: videoName, withExtension: "MP4", subdirectory: "Videos")
+            ?? Bundle.main.url(forResource: videoName, withExtension: "mp4", subdirectory: "Videos")
+            ?? Bundle.main.url(forResource: videoName, withExtension: "MP4")
+            ?? Bundle.main.url(forResource: videoName, withExtension: "mp4")
+
+            // Back-compat fallback if old asset name still exists
             ?? Bundle.main.url(forResource: "Pill-video 2", withExtension: "MP4", subdirectory: "Resources")
             ?? Bundle.main.url(forResource: "Pill-video 2", withExtension: "MP4")
         guard let url = url else { return }
@@ -94,7 +107,7 @@ final class PillVideoUIView: UIView {
                 playerLayer.player = player
             }
             if player == nil {
-                setupPlayer()
+                setupPlayer(videoName: currentVideoName ?? "DashboardVideo")
             } else {
                 player?.play()
             }
@@ -102,6 +115,11 @@ final class PillVideoUIView: UIView {
             // Pause but keep the last rendered frame visible
             player?.pause()
         }
+    }
+
+    func setVideoIfNeeded(videoName: String) {
+        guard currentVideoName != videoName else { return }
+        setupPlayer(videoName: videoName)
     }
 
     private func holdOnLastFrame() {

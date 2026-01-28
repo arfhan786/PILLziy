@@ -34,6 +34,7 @@ struct DashboardView: View {
     @State private var selectedMedication: Medication?
     @State private var showPharmacyHint = false
     @State private var isPillVideoPlaying = true
+    @State private var hasStoppedVideo = false
     
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
@@ -119,10 +120,14 @@ struct DashboardView: View {
             .padding(.bottom, 24)
         }
         .onAppear {
-            isPillVideoPlaying = true
+            isPillVideoPlaying = !hasStoppedVideo
             if selectedMedication == nil && !medicationStore.medications.isEmpty {
                 selectedMedication = medicationStore.medications.first
             }
+        }
+        .onDisappear {
+            hasStoppedVideo = true
+            isPillVideoPlaying = false
         }
     }
 }

@@ -31,6 +31,7 @@ struct SkipDoseImpactView: View {
     let medication: Medication
     @Environment(\.dismiss) var dismiss
     @State private var isPillVideoPlaying = true
+    @State private var hasStoppedVideo = false
     
     var body: some View {
         VStack(spacing: 0) {
@@ -46,19 +47,24 @@ struct SkipDoseImpactView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                         .scaleEffect(2.1, anchor: .bottomLeading)
                 }
-                .offset(x: -10)
+                .offset(x: -28)
 
                 Spacer(minLength: 8)
 
-                LoopingPillVideoView(isPlaying: isPillVideoPlaying)
+                LoopingPillVideoView(videoName: "SkipADoseVideo", isPlaying: isPillVideoPlaying)
                     .frame(width: 150, height: 150)
                     .background(Color.clear)
             }
             .padding(.horizontal, 20)
 
-            .onAppear { isPillVideoPlaying = true }
+            .onAppear { isPillVideoPlaying = !hasStoppedVideo }
+            .onDisappear {
+                hasStoppedVideo = true
+                isPillVideoPlaying = false
+            }
 
             Button(action: {
+                hasStoppedVideo = true
                 isPillVideoPlaying = false
                 dismiss()
             }) {

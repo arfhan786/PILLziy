@@ -32,6 +32,7 @@ struct TakeDoseView: View {
     let medication: Medication
     @Environment(\.dismiss) var dismiss
     @State private var isPillVideoPlaying = true
+    @State private var hasStoppedVideo = false
     
     var body: some View {
         VStack(spacing: 0) {
@@ -51,15 +52,20 @@ struct TakeDoseView: View {
 
                 Spacer(minLength: 8)
 
-                LoopingPillVideoView(isPlaying: isPillVideoPlaying)
+                LoopingPillVideoView(videoName: "TakeADoseVideo", isPlaying: isPillVideoPlaying)
                     .frame(width: 150, height: 150)
                     .background(Color.clear)
             }
             .padding(.horizontal, 20)
-            .onAppear { isPillVideoPlaying = true }
+            .onAppear { isPillVideoPlaying = !hasStoppedVideo }
+            .onDisappear {
+                hasStoppedVideo = true
+                isPillVideoPlaying = false
+            }
 
             HStack(spacing: 12) {
                 Button(action: {
+                    hasStoppedVideo = true
                     isPillVideoPlaying = false
                     // How to take it action
                 }) {
@@ -77,6 +83,7 @@ struct TakeDoseView: View {
                 .buttonStyle(.plain)
                 
                 Button(action: {
+                    hasStoppedVideo = true
                     isPillVideoPlaying = false
                     dismiss()
                 }) {
