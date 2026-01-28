@@ -31,28 +31,36 @@ private struct TakeDoseMorphismOverlay: View {
 struct TakeDoseView: View {
     let medication: Medication
     @Environment(\.dismiss) var dismiss
+    @State private var isPillVideoPlaying = true
     
     var body: some View {
         VStack(spacing: 0) {
             Spacer()
+                .frame(minHeight: 100)
 
             HStack(alignment: .bottom, spacing: 16) {
-                Image("Take dose")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(maxWidth: 260)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                ZStack(alignment: .bottomLeading) {
+                    Image("Take dose")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(maxWidth: 260)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .scaleEffect(2.1, anchor: .bottomLeading)
+                }
+                .offset(x: -10)
 
                 Spacer(minLength: 8)
 
-                LoopingPillVideoView()
+                LoopingPillVideoView(isPlaying: isPillVideoPlaying)
                     .frame(width: 150, height: 150)
                     .background(Color.clear)
             }
             .padding(.horizontal, 20)
+            .onAppear { isPillVideoPlaying = true }
 
             HStack(spacing: 12) {
                 Button(action: {
+                    isPillVideoPlaying = false
                     // How to take it action
                 }) {
                     Text("How to take it?")
@@ -69,6 +77,7 @@ struct TakeDoseView: View {
                 .buttonStyle(.plain)
                 
                 Button(action: {
+                    isPillVideoPlaying = false
                     dismiss()
                 }) {
                     Text("I have taken")

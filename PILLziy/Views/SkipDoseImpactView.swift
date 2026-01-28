@@ -30,37 +30,36 @@ private struct ImpactMorphismOverlay: View {
 struct SkipDoseImpactView: View {
     let medication: Medication
     @Environment(\.dismiss) var dismiss
+    @State private var isPillVideoPlaying = true
     
     var body: some View {
         VStack(spacing: 0) {
-            Text("The Impact of Missing a Dose")
-                .font(.system(size: 22, weight: .bold))
-                .foregroundColor(.primary)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
-                .padding(.top, 8)
-                .padding(.horizontal, 20)
-
-            Spacer(minLength: 16)
+            Spacer()
+                .frame(minHeight: 100)
 
             HStack(alignment: .bottom, spacing: 16) {
-                Image("BodyDoseSkip")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(maxWidth: 260)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                ZStack(alignment: .bottomLeading) {
+                    Image("BodyDoseSkip")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(maxWidth: 260)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .scaleEffect(2.1, anchor: .bottomLeading)
+                }
+                .offset(x: -10)
 
-                Spacer()
+                Spacer(minLength: 8)
 
-                LoopingPillVideoView()
-                    .frame(width: 120, height: 120)
+                LoopingPillVideoView(isPlaying: isPillVideoPlaying)
+                    .frame(width: 150, height: 150)
                     .background(Color.clear)
             }
             .padding(.horizontal, 20)
 
-            Spacer()
+            .onAppear { isPillVideoPlaying = true }
 
             Button(action: {
+                isPillVideoPlaying = false
                 dismiss()
             }) {
                 HStack(spacing: 8) {
@@ -81,7 +80,7 @@ struct SkipDoseImpactView: View {
             .padding(.bottom, 24)
         }
         .background(Color.white)
-        .navigationTitle(medication.name)
+        .navigationTitle("The Impact of Missing a Dose")
         .navigationBarTitleDisplayMode(.inline)
     }
 }

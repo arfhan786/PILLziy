@@ -9,6 +9,9 @@ import SwiftUI
 import AVFoundation
 
 struct LoopingPillVideoView: UIViewRepresentable {
+    /// Control playback without removing/hiding the video.
+    var isPlaying: Bool = true
+
     func makeUIView(context: Context) -> PillVideoUIView {
         let view = PillVideoUIView()
         view.setupPlayer()
@@ -17,6 +20,7 @@ struct LoopingPillVideoView: UIViewRepresentable {
 
     func updateUIView(_ uiView: PillVideoUIView, context: Context) {
         uiView.layoutPlayerLayer()
+        uiView.setPlaying(isPlaying)
     }
 }
 
@@ -80,6 +84,23 @@ final class PillVideoUIView: UIView {
                     self?.holdOnLastFrame()
                 }
             }
+        }
+    }
+
+    func setPlaying(_ isPlaying: Bool) {
+        if isPlaying {
+            if playerLayer.player == nil {
+                // Reattach playerLayer if needed
+                playerLayer.player = player
+            }
+            if player == nil {
+                setupPlayer()
+            } else {
+                player?.play()
+            }
+        } else {
+            // Pause but keep the last rendered frame visible
+            player?.pause()
         }
     }
 

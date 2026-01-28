@@ -33,6 +33,7 @@ struct DashboardView: View {
     @EnvironmentObject var medicationStore: MedicationStore
     @State private var selectedMedication: Medication?
     @State private var showPharmacyHint = false
+    @State private var isPillVideoPlaying = true
     
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
@@ -49,6 +50,7 @@ struct DashboardView: View {
                     Spacer()
                     
                     Button(action: {
+                        isPillVideoPlaying = false
                         // Notification action
                     }) {
                         Image(systemName: "bell.fill")
@@ -62,7 +64,7 @@ struct DashboardView: View {
                 
                 // Main content card
                 if let medication = selectedMedication ?? medicationStore.medications.first {
-                    MedicationCardView(medication: medication)
+                    MedicationCardView(medication: medication, isPillVideoPlaying: $isPillVideoPlaying)
                         .padding(.horizontal, 20)
                         .padding(.top, 44)
                 } else {
@@ -84,6 +86,7 @@ struct DashboardView: View {
             // Bottom-right round + button with pharmacy hint
             HStack(alignment: .center, spacing: 0) {
                 Button(action: {
+                    isPillVideoPlaying = false
                     showPharmacyHint.toggle()
                 }) {
                     Image(systemName: "plus")
@@ -98,7 +101,7 @@ struct DashboardView: View {
                 .buttonStyle(.plain)
                 
                 if showPharmacyHint {
-                    Text("Log Symptoms")
+                    Text("How does your body feel today?")
                         .font(.system(size: 14, weight: .medium))
                         .foregroundColor(.primary)
                         .padding(.horizontal, 14)
@@ -116,6 +119,7 @@ struct DashboardView: View {
             .padding(.bottom, 24)
         }
         .onAppear {
+            isPillVideoPlaying = true
             if selectedMedication == nil && !medicationStore.medications.isEmpty {
                 selectedMedication = medicationStore.medications.first
             }
@@ -125,24 +129,26 @@ struct DashboardView: View {
 
 struct MedicationCardView: View {
     let medication: Medication
+    @Binding var isPillVideoPlaying: Bool
     
     var body: some View {
         VStack(spacing: 20) {
             // Pill Video
-            LoopingPillVideoView()
+            LoopingPillVideoView(isPlaying: isPillVideoPlaying)
                 .frame(maxWidth: .infinity)
                 .frame(height: 260)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             
-            // Medication name
-            Text(medication.name.uppercased())
-                .font(.system(size: 24, weight: .bold))
-                .foregroundColor(.black)
-            
-            // Dosage frequency
-            Text(medication.frequency)
-                .font(.system(size: 16, weight: .regular))
-                .foregroundColor(.gray)
+            // Medication name and frequency
+            HStack {
+                Text(medication.name.uppercased())
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundColor(.black)
+                
+                Text(medication.frequency)
+                    .font(.system(size: 16, weight: .regular))
+                    .foregroundColor(.gray)
+            }
             
             // Action buttons
             VStack(spacing: 12) {
@@ -165,6 +171,9 @@ struct MedicationCardView: View {
                         .shadow(color: Color.black.opacity(0.15), radius: 6, x: 0, y: 3)
                     }
                     .buttonStyle(.plain)
+                    .simultaneousGesture(TapGesture().onEnded {
+                        isPillVideoPlaying = false
+                    })
                     
                     // Take Dose button (blue)
                     NavigationLink(destination: TakeDoseView(medication: medication)) {
@@ -183,6 +192,9 @@ struct MedicationCardView: View {
                         .shadow(color: Color.black.opacity(0.15), radius: 6, x: 0, y: 3)
                     }
                     .buttonStyle(.plain)
+                    .simultaneousGesture(TapGesture().onEnded {
+                        isPillVideoPlaying = false
+                    })
                 }
             }
             .padding(.top, 10)
