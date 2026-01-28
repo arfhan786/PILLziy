@@ -215,16 +215,18 @@ struct TakeDoseView: View {
             .navigationTitle("How it Helps You")
             .navigationBarTitleDisplayMode(.inline)
             
-            // Center both blue bullet dots in the middle of the screen
-            HStack(spacing: 32) {
-                BlueWaveDot()
-                BlueWaveDot()
-            }
-            .allowsHitTesting(false)
-            
             // Arm image with thick blurry green outline overlay
             ArmImageWithGreenGlow()
                 .offset(x: -12, y: -57)
+                .allowsHitTesting(false)
+
+            // Blue bullet dots above the Arm image, positioned separately
+            BlueWaveDot()
+                .offset(x: -60, y: -200)
+                .allowsHitTesting(false)
+            
+            BlueWaveDot()
+                .offset(x: 60, y: -200)
                 .allowsHitTesting(false)
 
             if showTakenPopup {
