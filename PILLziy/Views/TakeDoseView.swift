@@ -67,7 +67,7 @@ private struct ArmImageWithGreenGlow: View {
                 .renderingMode(.template)
                 .aspectRatio(contentMode: .fit)
                 .foregroundColor(takeDoseGreen)
-                .frame(width: 540, height: 540)
+                .frame(width: 680, height: 680)
                 .blur(radius: 35)
                 .opacity(glowOpacity * 0.6)
             
@@ -77,7 +77,7 @@ private struct ArmImageWithGreenGlow: View {
                 .renderingMode(.template)
                 .aspectRatio(contentMode: .fit)
                 .foregroundColor(takeDoseGreen)
-                .frame(width: 520, height: 520)
+                .frame(width: 660, height: 660)
                 .blur(radius: 28)
                 .opacity(glowOpacity * 0.7)
             
@@ -87,7 +87,7 @@ private struct ArmImageWithGreenGlow: View {
                 .renderingMode(.template)
                 .aspectRatio(contentMode: .fit)
                 .foregroundColor(takeDoseGreen)
-                .frame(width: 510, height: 510)
+                .frame(width: 650, height: 650)
                 .blur(radius: 22)
                 .opacity(glowOpacity * 0.8)
             
@@ -97,7 +97,7 @@ private struct ArmImageWithGreenGlow: View {
                 .renderingMode(.template)
                 .aspectRatio(contentMode: .fit)
                 .foregroundColor(takeDoseGreen.opacity(glowOpacity))
-                .frame(width: 508, height: 508)
+                .frame(width: 648, height: 648)
                 .blur(radius: 6)
             
             Image("Arm")
@@ -105,7 +105,7 @@ private struct ArmImageWithGreenGlow: View {
                 .renderingMode(.template)
                 .aspectRatio(contentMode: .fit)
                 .foregroundColor(takeDoseGreen.opacity(glowOpacity))
-                .frame(width: 504, height: 504)
+                .frame(width: 644, height: 644)
                 .blur(radius: 4)
             
             Image("Arm")
@@ -113,14 +113,14 @@ private struct ArmImageWithGreenGlow: View {
                 .renderingMode(.template)
                 .aspectRatio(contentMode: .fit)
                 .foregroundColor(takeDoseGreen.opacity(glowOpacity))
-                .frame(width: 502, height: 502)
+                .frame(width: 642, height: 642)
                 .blur(radius: 2)
             
             // Main image (5x bigger: 500x500) - always visible
             Image("Arm")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 500, height: 500)
+                .frame(width: 640, height: 640)
         }
         .onAppear {
             // Continuously fade in and out only the green glow (from 0.3 to 0.9) - faster animation
@@ -158,7 +158,7 @@ struct TakeDoseView: View {
                         BlueWaveDot()
                             .offset(x: 40, y: -40)
                     }
-                    .offset(x: -80)
+                    .offset(x: -85)
 
                     ZStack(alignment: .topTrailing) {
                         LoopingPillVideoView(videoName: "TakeADoseVideo", isPlaying: isPillVideoPlaying)
@@ -181,6 +181,8 @@ struct TakeDoseView: View {
                     NavigationLink(destination: FoodDrinkSelectionView()) {
                         Text("How to take it?")
                             .font(.system(size: 16, weight: .medium))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.85)
                             .foregroundColor(.primary)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
@@ -203,6 +205,8 @@ struct TakeDoseView: View {
                     }) {
                         Text("I have taken")
                             .font(.system(size: 16, weight: .semibold))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.85)
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
@@ -223,7 +227,7 @@ struct TakeDoseView: View {
             
             // Arm image with thick blurry green outline overlay
             ArmImageWithGreenGlow()
-                .offset(y: -80)
+                .offset(x: -12, y: -57)
                 .allowsHitTesting(false)
 
             if showTakenPopup {
