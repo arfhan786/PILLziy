@@ -229,12 +229,42 @@ struct TakeDoseView: View {
 
             // Blue bullet dots above the Arm image, positioned separately
             BlueWaveDot()
-                .offset(x: -30, y: -360)
+                .offset(x: -27, y: -360)
                 .allowsHitTesting(false)
             
             BlueWaveDot()
                 .offset(x: 55, y: -150)
                 .allowsHitTesting(false)
+            
+            // Right-side morphism labels (overlay only; does not affect existing layout)
+            VStack(alignment: .trailing, spacing: 10) {
+                Text("Helps relieve headache")
+                    .font(.custom("Poppins", size: 14).weight(.medium))
+                    .foregroundColor(.primary)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .background(takeDoseMorphismGray)
+                    .overlay(TakeDoseMorphismOverlay())
+                    .clipShape(Capsule())
+                    .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 3)
+                    .offset(x: -120)
+                
+                Text("Heals Pain")
+                    .font(.custom("Poppins", size: 14).weight(.medium))
+                    .foregroundColor(.primary)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .background(takeDoseMorphismGray)
+                    .overlay(TakeDoseMorphismOverlay())
+                    .clipShape(Capsule())
+                    .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 3)
+                    .offset(x: -130, y: 120)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+            .padding(.trailing, 18)
+            .padding(.top, 20)
+            .allowsHitTesting(false)
+            .zIndex(10)
 
             if showTakenPopup {
                 Color.black.opacity(0.2)
