@@ -222,11 +222,11 @@ struct TakeDoseView: View {
 
             // Blue bullet dots above the Arm image, positioned separately
             BlueWaveDot()
-                .offset(x: -60, y: -200)
+                .offset(x: -30, y: -360)
                 .allowsHitTesting(false)
             
             BlueWaveDot()
-                .offset(x: 60, y: -200)
+                .offset(x: 55, y: -150)
                 .allowsHitTesting(false)
 
             if showTakenPopup {
