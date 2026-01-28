@@ -177,16 +177,15 @@ struct TakeDoseView: View {
                     isPillVideoPlaying = false
                 }
 
-                HStack(spacing: 12) {
+                HStack(spacing: 4) {
                     NavigationLink(destination: FoodDrinkSelectionView()) {
                         Text("How to take it?")
-                            .font(.system(size: 16, weight: .medium))
+                            .font(.system(size: 14, weight: .medium))
                             .lineLimit(1)
                             .minimumScaleFactor(0.85)
                             .foregroundColor(.primary)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 16)
-                            .padding(.horizontal, 20)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 10)
                             .background(takeDoseMorphismGray)
                             .overlay(TakeDoseMorphismOverlay())
                             .clipShape(Capsule())
@@ -204,13 +203,12 @@ struct TakeDoseView: View {
                         showTakenPopup = true
                     }) {
                         Text("I have taken")
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(.system(size: 14, weight: .semibold))
                             .lineLimit(1)
                             .minimumScaleFactor(0.85)
                             .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 16)
-                            .padding(.horizontal, 20)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 10)
                             .background(takeDoseGreen)
                             .overlay(TakeDoseMorphismOverlay())
                             .clipShape(Capsule())
@@ -219,7 +217,7 @@ struct TakeDoseView: View {
                     .buttonStyle(.plain)
                 }
                 .padding(.horizontal, 20)
-                .padding(.bottom, 24)
+                .padding(.bottom, 16)
             }
             .background(Color.white)
             .navigationTitle("How it Helps You")
