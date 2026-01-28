@@ -8,7 +8,7 @@
 import SwiftUI
 
 private let takeDoseMorphismGray = Color(white: 0.94)
-private let takeDoseGreen = Color(red: 0.45, green: 0.90, blue: 0.52)
+private let takeDoseGreen = Color(red: 0.35, green: 0.95, blue: 0.45)
 
 private struct TakeDoseMorphismOverlay: View {
     var body: some View {
@@ -34,23 +34,23 @@ struct TakeDoseView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            ScrollView {
-                VStack(alignment: .center, spacing: 24) {
-                    Image("BodyDoseSkip")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(maxWidth: .infinity)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                    
-                    LoopingPillVideoView()
-                        .frame(height: 200)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                }
-                .padding(.horizontal, 20)
-                .padding(.top, 8)
-                .padding(.bottom, 24)
+            Spacer()
+
+            HStack(alignment: .bottom, spacing: 16) {
+                Image("Take dose")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: 260)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+
+                Spacer(minLength: 8)
+
+                LoopingPillVideoView()
+                    .frame(width: 150, height: 150)
+                    .background(Color.clear)
             }
-            
+            .padding(.horizontal, 20)
+
             HStack(spacing: 12) {
                 Button(action: {
                     // How to take it action
@@ -87,8 +87,8 @@ struct TakeDoseView: View {
             .padding(.horizontal, 20)
             .padding(.bottom, 24)
         }
-        .background(Color(white: 0.98))
-        .navigationTitle(medication.name)
+        .background(Color.white)
+        .navigationTitle("How it Helps You")
         .navigationBarTitleDisplayMode(.inline)
     }
 }
