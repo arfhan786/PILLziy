@@ -179,12 +179,12 @@ struct TakeDoseView: View {
                 HStack(spacing: 4) {
                     NavigationLink(destination: FoodDrinkSelectionView()) {
                         Text("How to take it?")
-                            .font(.system(size: 14, weight: .medium))
+                            .font(.custom("Poppins", size: 20).weight(.medium))
                             .lineLimit(1)
                             .minimumScaleFactor(0.85)
                             .foregroundColor(.primary)
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 10)
+                            .padding(.vertical, 14)
+                            .padding(.horizontal, 36)
                             .background(takeDoseMorphismGray)
                             .overlay(TakeDoseMorphismOverlay())
                             .clipShape(Capsule())
@@ -202,12 +202,12 @@ struct TakeDoseView: View {
                         showTakenPopup = true
                     }) {
                         Text("I have taken")
-                            .font(.system(size: 14, weight: .semibold))
+                            .font(.custom("Poppins", size: 20).weight(.medium))
                             .lineLimit(1)
                             .minimumScaleFactor(0.85)
                             .foregroundColor(.white)
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 10)
+                            .padding(.vertical, 14)
+                            .padding(.horizontal, 36)
                             .background(takeDoseGreen)
                             .overlay(TakeDoseMorphismOverlay())
                             .clipShape(Capsule())
@@ -215,7 +215,7 @@ struct TakeDoseView: View {
                     }
                     .buttonStyle(.plain)
                 }
-                .padding(.horizontal, 20)
+                .padding(.horizontal, 25)
                 .padding(.bottom, 16)
             }
             .background(Color.white)
