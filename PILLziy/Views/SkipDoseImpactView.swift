@@ -8,6 +8,7 @@
 import SwiftUI
 
 private let impactMorphismGray = Color(white: 0.94)
+private let skipDoseRed = Color.red
 
 private struct ImpactMorphismOverlay: View {
     var body: some View {
@@ -24,6 +25,88 @@ private struct ImpactMorphismOverlay: View {
                 )
             )
             .allowsHitTesting(false)
+    }
+}
+
+private struct ArmImageWithGreenGlow: View {
+    @State private var glowOpacity: Double = 0.3
+    
+    var body: some View {
+        ZStack {
+            // Thick blurry green outline - outer layer
+            Image("SadArm")
+                .resizable()
+                .renderingMode(.template)
+                .aspectRatio(contentMode: .fit)
+                .foregroundColor(skipDoseRed)
+                .frame(width: 680, height: 680)
+                .blur(radius: 35)
+                .opacity(glowOpacity * 0.6)
+            
+            // Thick blurry green outline - middle layer
+            Image("SadArm")
+                .resizable()
+                .renderingMode(.template)
+                .aspectRatio(contentMode: .fit)
+                .foregroundColor(skipDoseRed)
+                .frame(width: 660, height: 660)
+                .blur(radius: 28)
+                .opacity(glowOpacity * 0.7)
+            
+            // Thick blurry green outline - inner layer
+            Image("SadArm")
+                .resizable()
+                .renderingMode(.template)
+                .aspectRatio(contentMode: .fit)
+                .foregroundColor(skipDoseRed)
+                .frame(width: 650, height: 650)
+                .blur(radius: 22)
+                .opacity(glowOpacity * 0.8)
+            
+            // Thick green stroke outline layers for visibility
+            Image("SadArm")
+                .resizable()
+                .renderingMode(.template)
+                .aspectRatio(contentMode: .fit)
+                .foregroundColor(skipDoseRed.opacity(glowOpacity))
+                .frame(width: 648, height: 648)
+                .blur(radius: 6)
+            
+            Image("SadArm")
+                .resizable()
+                .renderingMode(.template)
+                .aspectRatio(contentMode: .fit)
+                .foregroundColor(skipDoseRed.opacity(glowOpacity))
+                .frame(width: 644, height: 644)
+                .blur(radius: 4)
+            
+            Image("SadArm")
+                .resizable()
+                .renderingMode(.template)
+                .aspectRatio(contentMode: .fit)
+                .foregroundColor(skipDoseRed.opacity(glowOpacity))
+                .frame(width: 642, height: 642)
+                .blur(radius: 2)
+            
+            // Main image (5x bigger: 500x500) - always visible
+            Image("SadArm")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 640, height: 640)
+
+            // Top green glow halo that fades in/out
+            Circle()
+                .fill(skipDoseRed.opacity(glowOpacity))
+                .frame(width: 190, height: 95)
+                .blur(radius: 25)
+                .offset(x: 10, y: -280)
+        }
+        .onAppear {
+            // Continuously fade in and out only the green glow (from 0.3 to 0.9) - faster animation
+            withAnimation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
+                glowOpacity = 0.9
+            }
+        }
     }
 }
 
@@ -90,6 +173,11 @@ struct SkipDoseImpactView: View {
             .background(Color.white)
             .navigationTitle("The Impact of Missing a Dose")
             .navigationBarTitleDisplayMode(.inline)
+            
+            // Arm image with thick blurry green outline overlay
+            ArmImageWithGreenGlow()
+                .offset(x: -70, y: -65)
+                .allowsHitTesting(false)
 
             if showSkippedPopup {
                 Color.black.opacity(0.2)
