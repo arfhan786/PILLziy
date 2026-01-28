@@ -139,6 +139,9 @@ struct SkipDoseImpactView: View {
                     LoopingPillVideoView(videoName: "SkipADoseVideo", isPlaying: isPillVideoPlaying)
                         .frame(width: 150, height: 150)
                         .background(Color.clear)
+                        // Keep the pill visible and in its intended spot (arm overlay is very large).
+                        .offset(x: -128)
+                        .zIndex(2)
                 }
                 .padding(.horizontal, 20)
 
@@ -160,13 +163,14 @@ struct SkipDoseImpactView: View {
                             .font(.system(size: 17, weight: .semibold))
                     }
                     .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 28)
                     .padding(.vertical, 16)
                     .background(Color.red)
                     .overlay(ImpactMorphismOverlay())
                     .clipShape(Capsule())
                     .shadow(color: Color.red.opacity(0.35), radius: 8, x: 0, y: 4)
                 }
+                .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.horizontal, 20)
                 .padding(.bottom, 24)
             }
@@ -178,6 +182,8 @@ struct SkipDoseImpactView: View {
             ArmImageWithGreenGlow()
                 .offset(x: -70, y: -65)
                 .allowsHitTesting(false)
+                // Don't let the large overlay cover core UI elements (like the pill).
+                .zIndex(0)
 
             if showSkippedPopup {
                 Color.black.opacity(0.2)
