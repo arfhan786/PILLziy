@@ -153,10 +153,6 @@ struct TakeDoseView: View {
                             .frame(maxWidth: 260)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                             .scaleEffect(2.1, anchor: .bottomLeading)
-
-                        // Blue wave dot near body
-                        BlueWaveDot()
-                            .offset(x: 40, y: -40)
                     }
                     .offset(x: -85)
 
@@ -164,10 +160,6 @@ struct TakeDoseView: View {
                         LoopingPillVideoView(videoName: "TakeADoseVideo", isPlaying: isPillVideoPlaying)
                             .frame(width: 150, height: 150)
                             .background(Color.clear)
-
-                        // Second blue wave dot near pill
-                        BlueWaveDot()
-                            .offset(x: 12, y: -12)
                     }
                 }
                 .padding(.horizontal, 20)
@@ -222,6 +214,13 @@ struct TakeDoseView: View {
             .background(Color.white)
             .navigationTitle("How it Helps You")
             .navigationBarTitleDisplayMode(.inline)
+            
+            // Center both blue bullet dots in the middle of the screen
+            HStack(spacing: 32) {
+                BlueWaveDot()
+                BlueWaveDot()
+            }
+            .allowsHitTesting(false)
             
             // Arm image with thick blurry green outline overlay
             ArmImageWithGreenGlow()
