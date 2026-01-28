@@ -56,6 +56,81 @@ private struct BlueWaveDot: View {
     }
 }
 
+private struct ArmImageWithGreenGlow: View {
+    @State private var glowOpacity: Double = 0.3
+    
+    var body: some View {
+        ZStack {
+            // Thick blurry green outline - outer layer
+            Image("Arm")
+                .resizable()
+                .renderingMode(.template)
+                .aspectRatio(contentMode: .fit)
+                .foregroundColor(takeDoseGreen)
+                .frame(width: 540, height: 540)
+                .blur(radius: 35)
+                .opacity(glowOpacity * 0.6)
+            
+            // Thick blurry green outline - middle layer
+            Image("Arm")
+                .resizable()
+                .renderingMode(.template)
+                .aspectRatio(contentMode: .fit)
+                .foregroundColor(takeDoseGreen)
+                .frame(width: 520, height: 520)
+                .blur(radius: 28)
+                .opacity(glowOpacity * 0.7)
+            
+            // Thick blurry green outline - inner layer
+            Image("Arm")
+                .resizable()
+                .renderingMode(.template)
+                .aspectRatio(contentMode: .fit)
+                .foregroundColor(takeDoseGreen)
+                .frame(width: 510, height: 510)
+                .blur(radius: 22)
+                .opacity(glowOpacity * 0.8)
+            
+            // Thick green stroke outline layers for visibility
+            Image("Arm")
+                .resizable()
+                .renderingMode(.template)
+                .aspectRatio(contentMode: .fit)
+                .foregroundColor(takeDoseGreen.opacity(glowOpacity))
+                .frame(width: 508, height: 508)
+                .blur(radius: 6)
+            
+            Image("Arm")
+                .resizable()
+                .renderingMode(.template)
+                .aspectRatio(contentMode: .fit)
+                .foregroundColor(takeDoseGreen.opacity(glowOpacity))
+                .frame(width: 504, height: 504)
+                .blur(radius: 4)
+            
+            Image("Arm")
+                .resizable()
+                .renderingMode(.template)
+                .aspectRatio(contentMode: .fit)
+                .foregroundColor(takeDoseGreen.opacity(glowOpacity))
+                .frame(width: 502, height: 502)
+                .blur(radius: 2)
+            
+            // Main image (5x bigger: 500x500) - always visible
+            Image("Arm")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 500, height: 500)
+        }
+        .onAppear {
+            // Continuously fade in and out only the green glow (from 0.3 to 0.9) - faster animation
+            withAnimation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
+                glowOpacity = 0.9
+            }
+        }
+    }
+}
+
 struct TakeDoseView: View {
     let medication: Medication
     @Environment(\.dismiss) var dismiss
@@ -70,7 +145,7 @@ struct TakeDoseView: View {
                 Spacer()
                     .frame(minHeight: 100)
 
-                HStack(alignment: .bottom, spacing: 16) {
+                HStack(alignment: .bottom, spacing: 5) {
                     ZStack(alignment: .bottomLeading) {
                         Image("Take dose")
                             .resizable()
@@ -83,9 +158,7 @@ struct TakeDoseView: View {
                         BlueWaveDot()
                             .offset(x: 40, y: -40)
                     }
-                    .offset(x: -10)
-
-                    Spacer(minLength: 8)
+                    .offset(x: -80)
 
                     ZStack(alignment: .topTrailing) {
                         LoopingPillVideoView(videoName: "TakeADoseVideo", isPlaying: isPillVideoPlaying)
@@ -147,6 +220,11 @@ struct TakeDoseView: View {
             .background(Color.white)
             .navigationTitle("How it Helps You")
             .navigationBarTitleDisplayMode(.inline)
+            
+            // Arm image with thick blurry green outline overlay
+            ArmImageWithGreenGlow()
+                .offset(y: -80)
+                .allowsHitTesting(false)
 
             if showTakenPopup {
                 Color.black.opacity(0.2)
