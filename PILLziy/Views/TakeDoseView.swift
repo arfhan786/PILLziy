@@ -33,6 +33,7 @@ struct TakeDoseView: View {
     @Environment(\.dismiss) var dismiss
     @State private var isPillVideoPlaying = true
     @State private var hasStoppedVideo = false
+    @State private var showFoodDrinkSelection = false
     
     var body: some View {
         VStack(spacing: 0) {
@@ -64,11 +65,7 @@ struct TakeDoseView: View {
             }
 
             HStack(spacing: 12) {
-                Button(action: {
-                    hasStoppedVideo = true
-                    isPillVideoPlaying = false
-                    // How to take it action
-                }) {
+                NavigationLink(destination: FoodDrinkSelectionView()) {
                     Text("How to take it?")
                         .font(.system(size: 16, weight: .medium))
                         .foregroundColor(.primary)
@@ -81,6 +78,10 @@ struct TakeDoseView: View {
                         .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 3)
                 }
                 .buttonStyle(.plain)
+                .simultaneousGesture(TapGesture().onEnded {
+                    hasStoppedVideo = true
+                    isPillVideoPlaying = false
+                })
                 
                 Button(action: {
                     hasStoppedVideo = true
