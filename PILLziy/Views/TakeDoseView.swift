@@ -62,89 +62,129 @@ struct TakeDoseView: View {
     @State private var isPillVideoPlaying = true
     @State private var hasStoppedVideo = false
     @State private var showFoodDrinkSelection = false
+    @State private var showTakenPopup = false
     
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
-                .frame(minHeight: 100)
+        ZStack {
+            VStack(spacing: 0) {
+                Spacer()
+                    .frame(minHeight: 100)
 
-            HStack(alignment: .bottom, spacing: 16) {
-                ZStack(alignment: .bottomLeading) {
-                    Image("Take dose")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(maxWidth: 260)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .scaleEffect(2.1, anchor: .bottomLeading)
+                HStack(alignment: .bottom, spacing: 16) {
+                    ZStack(alignment: .bottomLeading) {
+                        Image("Take dose")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxWidth: 260)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .scaleEffect(2.1, anchor: .bottomLeading)
 
-                    // Blue wave dot near body
-                    BlueWaveDot()
-                        .offset(x: 40, y: -40)
+                        // Blue wave dot near body
+                        BlueWaveDot()
+                            .offset(x: 40, y: -40)
+                    }
+                    .offset(x: -10)
+
+                    Spacer(minLength: 8)
+
+                    ZStack(alignment: .topTrailing) {
+                        LoopingPillVideoView(videoName: "TakeADoseVideo", isPlaying: isPillVideoPlaying)
+                            .frame(width: 150, height: 150)
+                            .background(Color.clear)
+
+                        // Second blue wave dot near pill
+                        BlueWaveDot()
+                            .offset(x: 12, y: -12)
+                    }
                 }
-                .offset(x: -10)
-
-                Spacer(minLength: 8)
-
-                ZStack(alignment: .topTrailing) {
-                    LoopingPillVideoView(videoName: "TakeADoseVideo", isPlaying: isPillVideoPlaying)
-                        .frame(width: 150, height: 150)
-                        .background(Color.clear)
-
-                    // Second blue wave dot near pill
-                    BlueWaveDot()
-                        .offset(x: 12, y: -12)
-                }
-            }
-            .padding(.horizontal, 20)
-            .onAppear { isPillVideoPlaying = !hasStoppedVideo }
-            .onDisappear {
-                hasStoppedVideo = true
-                isPillVideoPlaying = false
-            }
-
-            HStack(spacing: 12) {
-                NavigationLink(destination: FoodDrinkSelectionView()) {
-                    Text("How to take it?")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.primary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 16)
-                        .padding(.horizontal, 20)
-                        .background(takeDoseMorphismGray)
-                        .overlay(TakeDoseMorphismOverlay())
-                        .clipShape(Capsule())
-                        .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 3)
-                }
-                .buttonStyle(.plain)
-                .simultaneousGesture(TapGesture().onEnded {
+                .padding(.horizontal, 20)
+                .onAppear { isPillVideoPlaying = !hasStoppedVideo }
+                .onDisappear {
                     hasStoppedVideo = true
                     isPillVideoPlaying = false
-                })
-                
-                Button(action: {
-                    hasStoppedVideo = true
-                    isPillVideoPlaying = false
-                    dismiss()
-                }) {
-                    Text("I have taken")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 16)
-                        .padding(.horizontal, 20)
-                        .background(takeDoseGreen)
-                        .overlay(TakeDoseMorphismOverlay())
-                        .clipShape(Capsule())
-                        .shadow(color: takeDoseGreen.opacity(0.4), radius: 8, x: 0, y: 4)
                 }
-                .buttonStyle(.plain)
+
+                HStack(spacing: 12) {
+                    NavigationLink(destination: FoodDrinkSelectionView()) {
+                        Text("How to take it?")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.primary)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .padding(.horizontal, 20)
+                            .background(takeDoseMorphismGray)
+                            .overlay(TakeDoseMorphismOverlay())
+                            .clipShape(Capsule())
+                            .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 3)
+                    }
+                    .buttonStyle(.plain)
+                    .simultaneousGesture(TapGesture().onEnded {
+                        hasStoppedVideo = true
+                        isPillVideoPlaying = false
+                    })
+                    
+                    Button(action: {
+                        hasStoppedVideo = true
+                        isPillVideoPlaying = false
+                        showTakenPopup = true
+                    }) {
+                        Text("I have taken")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .padding(.horizontal, 20)
+                            .background(takeDoseGreen)
+                            .overlay(TakeDoseMorphismOverlay())
+                            .clipShape(Capsule())
+                            .shadow(color: takeDoseGreen.opacity(0.4), radius: 8, x: 0, y: 4)
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 24)
             }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 24)
+            .background(Color.white)
+            .navigationTitle("How it Helps You")
+            .navigationBarTitleDisplayMode(.inline)
+
+            if showTakenPopup {
+                Color.black.opacity(0.2)
+                    .ignoresSafeArea()
+
+                VStack {
+                    ZStack(alignment: .topTrailing) {
+                        VStack(spacing: 8) {
+                            Image("Dose Logged popup")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxHeight: 140)
+
+                            Text("Dose Logged")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundColor(.primary)
+                                .padding(.top, 4)
+                        }
+                        .padding(14)
+                        .frame(width: 300, height: 300)
+                        .background(Color(white: 0.95))
+                        .clipShape(RoundedRectangle(cornerRadius: 18))
+                        .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 6)
+
+                        Button(action: {
+                            showTakenPopup = false
+                            dismiss()
+                        }) {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 14, weight: .bold))
+                                .foregroundColor(.gray)
+                                .padding(8)
+                        }
+                        .offset(x: -4, y: 4)
+                    }
+                }
+            }
         }
-        .background(Color.white)
-        .navigationTitle("How it Helps You")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
