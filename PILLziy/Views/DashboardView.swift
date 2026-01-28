@@ -45,7 +45,7 @@ struct DashboardView: View {
                 // Top bar with name and bell icon
                 HStack {
                     Text("William Davis")
-                        .font(.custom("Poppins", size: 20).weight(.bold))
+                        .font(.custom("Poppins", size: 20).weight(.semibold))
                         .foregroundColor(.black)
                     
                     Spacer()
@@ -54,20 +54,44 @@ struct DashboardView: View {
                         isPillVideoPlaying = false
                         // Notification action
                     }) {
-                        Image(systemName: "bell.fill")
-                            .font(.custom("Poppins", size: 20))
-                            .foregroundColor(.black)
+                        ZStack {
+                            Circle()
+                                .fill(Color.white)
+                                .overlay(
+                                    Circle()
+                                        .fill(
+                                            LinearGradient(
+                                                colors: [
+                                                    Color.black.opacity(0.06),
+                                                    Color.black.opacity(0.02),
+                                                    Color.clear
+                                                ],
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            )
+                                        )
+                                        .allowsHitTesting(false)
+                                )
+                                .shadow(color: Color.black.opacity(0.10), radius: 8, x: 0, y: 4)
+                            
+                            Image(systemName: "bell")
+                                .font(.custom("Poppins", size: 16))
+                                .foregroundColor(.black)
+                        }
+                        .frame(width: 36, height: 36)
                     }
+                    .buttonStyle(.plain)
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 10)
                 .padding(.bottom, 20)
                 
-                // Main content card centered vertically
+                // Main content card slightly above center
                 if let medication = selectedMedication ?? medicationStore.medications.first {
                     MedicationCardView(medication: medication, isPillVideoPlaying: $isPillVideoPlaying)
                         .padding(.horizontal, 20)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                        .padding(.top, 75)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 } else {
                     VStack(spacing: 20) {
                         Text("No medications added")
@@ -152,7 +176,7 @@ struct MedicationCardView: View {
             // Medication name and frequency
             HStack {
                 Text(medication.name.uppercased())
-                    .font(.custom("Poppins", size: 24).weight(.heavy))
+                    .font(.custom("Poppins", size: 24).weight(.bold))
                     .foregroundColor(.black)
                 
                 Text(medication.frequency)
@@ -163,20 +187,22 @@ struct MedicationCardView: View {
             // Action buttons
             VStack(spacing: 12) {
                 // Skip Dose and Take Dose buttons in one line
-                HStack(spacing: 12) {
+                HStack(spacing: 40) {
                     // Skip Dose button (red)
                     NavigationLink(destination: SkipDoseImpactView(medication: medication)) {
                         HStack(alignment: .center, spacing: 6) {
                             Image(systemName: "xmark")
-                                .font(.custom("Poppins", size: 16).weight(.semibold))
-                            Text("Skip")
-                                .font(.custom("Poppins", size: 16).weight(.semibold))
+                                .font(.custom("Poppins", size: 16).weight(.regular))
+                            Text("Skip Dose")
+                                .font(.custom("Poppins", size: 16).weight(.regular))
                                 .lineLimit(1)
-                                .minimumScaleFactor(0.8)
+                                .minimumScaleFactor(0.9)
+                                .layoutPriority(1)
+
+                            Spacer(minLength: 0)
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.white)
-                        .padding(.horizontal, 40)
+                        .padding(.horizontal, 16)
                         .padding(.vertical, 8)
                         .frame(maxWidth: .infinity, minHeight: 60, maxHeight: 60, alignment: .center)
                         .background(
@@ -202,15 +228,17 @@ struct MedicationCardView: View {
                     NavigationLink(destination: TakeDoseView(medication: medication)) {
                         HStack(alignment: .center, spacing: 6) {
                             Image(systemName: "checkmark")
-                                .font(.custom("Poppins", size: 16).weight(.semibold))
-                            Text("Take")
-                                .font(.custom("Poppins", size: 16).weight(.semibold))
+                                .font(.custom("Poppins", size: 16).weight(.regular))
+                            Text("Take Dose")
+                                .font(.custom("Poppins", size: 16).weight(.regular))
                                 .lineLimit(1)
-                                .minimumScaleFactor(0.8)
+                                .minimumScaleFactor(0.9)
+                                .layoutPriority(1)
+
+                            Spacer(minLength: 0)
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.white)
-                        .padding(.horizontal, 40)
+                        .padding(.horizontal, 16)
                         .padding(.vertical, 8)
                         .frame(maxWidth: .infinity, minHeight: 60, maxHeight: 60, alignment: .center)
                         .background(
