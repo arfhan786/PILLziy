@@ -270,7 +270,7 @@ struct TakeDoseView: View {
                     .overlay(TakeDoseMorphismOverlay())
                     .clipShape(Capsule())
                     .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 3)
-                    .offset(x: -130, y: 120)
+                    .offset(x: -130, y: 100)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
             .padding(.trailing, 18)
@@ -290,7 +290,7 @@ struct TakeDoseView: View {
                                 .aspectRatio(contentMode: .fit)
                                 .frame(maxHeight: 140)
 
-                            Text("Dose Logged")
+                            Text("Dose Taken Logged")
                                 .font(.system(size: 16, weight: .semibold))
                                 .foregroundColor(.primary)
                                 .padding(.top, 4)

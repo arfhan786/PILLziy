@@ -156,15 +156,17 @@ struct SkipDoseImpactView: View {
                     isPillVideoPlaying = false
                     showSkippedPopup = true
                 }) {
-                    HStack(spacing: 8) {
+                    HStack(spacing: 0) {
                         Image(systemName: "xmark")
-                            .font(.system(size: 16, weight: .semibold))
-                        Text("Dose Skipped")
-                            .font(.system(size: 17, weight: .semibold))
+                            .font(.system(size: 18, weight: .semibold))
+                        Text("Log Dose Skipped")
+                            .font(.system(size: 18, weight: .regular))
+                            .padding(.horizontal, 50)
+                            .padding(.vertical, 4)
                     }
+                    
                     .foregroundColor(.white)
-                    .padding(.horizontal, 28)
-                    .padding(.vertical, 16)
+                    .padding()
                     .background(Color.red)
                     .overlay(ImpactMorphismOverlay())
                     .clipShape(Capsule())
@@ -197,7 +199,7 @@ struct SkipDoseImpactView: View {
                                 .aspectRatio(contentMode: .fit)
                                 .frame(maxHeight: 140)
 
-                            Text("Dose Skipped")
+                            Text("Skipped Dose Logged")
                                 .font(.system(size: 16, weight: .semibold))
                                 .foregroundColor(.primary)
                                 .padding(.top, 4)
