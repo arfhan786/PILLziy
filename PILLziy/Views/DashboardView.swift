@@ -175,7 +175,7 @@ struct MedicationCardView: View {
             
             // Medication name and frequency
             HStack {
-                Text(medication.name.uppercased())
+                Text("Tylenol".uppercased())
                     .font(.custom("Poppins", size: 24).weight(.bold))
                     .foregroundColor(.black)
                 

@@ -200,6 +200,8 @@ struct VomitView: View {
                     }
                 } label: {
                     Image("NewBack")
+                        .renderingMode(.template)
+                        .foregroundColor(.primary)
                 }
             }
         }

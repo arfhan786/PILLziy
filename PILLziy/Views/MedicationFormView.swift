@@ -97,7 +97,7 @@ struct MedicationFormView: View {
     @State private var medicationName: String = ""
     @State private var dosage: String = ""
     @State private var frequency: String = "1 Pill Daily"
-    @State private var pillColor: Color = .gray
+    @State private var pillColor: Color = .red
     
     var body: some View {
         VStack(spacing: 0) {
@@ -125,10 +125,16 @@ struct MedicationFormView: View {
                                 .foregroundColor(.secondary.opacity(0.8))
                         }
                         Spacer()
-                        Circle()
-                            .fill(pillColor)
-                            .frame(width: 40, height: 40)
-                            .overlay(Circle().stroke(Color.gray.opacity(0.3), lineWidth: 1))
+                        HStack {
+                            Circle()
+                                .fill(Color.red)
+                                .frame(width: 40, height: 40)
+                                .overlay(Circle().stroke(Color.gray.opacity(0.3), lineWidth: 1))
+                            Circle()
+                                .fill(Color.white)
+                                .frame(width: 40, height: 40)
+                                .overlay(Circle().stroke(Color.gray.opacity(0.3), lineWidth: 1))
+                        }
                     }
                 }
             }
