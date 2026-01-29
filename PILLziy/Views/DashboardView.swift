@@ -192,7 +192,7 @@ struct MedicationCardView: View {
                     NavigationLink(destination: SkipDoseImpactView(medication: medication)) {
                         HStack(alignment: .center, spacing: 6) {
                             Image(systemName: "xmark")
-                                .font(.custom("Poppins", size: 16).weight(.regular))
+                                .font(.custom("Poppins", size: 14).weight(.regular))
                             Text("Skip Dose")
                                 .font(.custom("Poppins", size: 16).weight(.regular))
                                 .lineLimit(1)
@@ -227,7 +227,7 @@ struct MedicationCardView: View {
                     NavigationLink(destination: TakeDoseView(medication: medication)) {
                         HStack(alignment: .center, spacing: 6) {
                             Image(systemName: "checkmark")
-                                .font(.custom("Poppins", size: 16).weight(.regular))
+                                .font(.custom("Poppins", size: 14).weight(.regular))
                             Text("Take Dose")
                                 .font(.custom("Poppins", size: 16).weight(.regular))
                                 .lineLimit(1)

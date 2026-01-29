@@ -8,7 +8,7 @@
 import SwiftUI
 
 private let takeDoseMorphismGray = Color(white: 0.94)
-private let takeDoseGreen = Color(red: 0.35, green: 0.95, blue: 0.45)
+private let takeDoseGreen = Color(red: 0.25, green: 0.75, blue: 0.35)
 
 private struct TakeDoseMorphismOverlay: View {
     var body: some View {
@@ -176,15 +176,16 @@ struct TakeDoseView: View {
                     isPillVideoPlaying = false
                 }
 
-                HStack(spacing: 4) {
+                HStack(spacing: 8) {
                     NavigationLink(destination: FoodDrinkSelectionView()) {
                         Text("How to take it?")
-                            .font(.custom("Poppins", size: 20).weight(.medium))
+                            .font(.custom("Poppins", size: 16).weight(.regular))
                             .lineLimit(1)
                             .minimumScaleFactor(0.85)
                             .foregroundColor(.primary)
-                            .padding(.vertical, 14)
-                            .padding(.horizontal, 36)
+                            .padding(.horizontal, 28)
+                            .padding(.vertical, 8)
+                            .frame(minHeight: 56, maxHeight: 56, alignment: .center)
                             .background(takeDoseMorphismGray)
                             .overlay(TakeDoseMorphismOverlay())
                             .clipShape(Capsule())
@@ -201,17 +202,28 @@ struct TakeDoseView: View {
                         isPillVideoPlaying = false
                         showTakenPopup = true
                     }) {
-                        Text("I have taken")
-                            .font(.custom("Poppins", size: 20).weight(.medium))
+                        Text("Log Dose Taken")
+                            .font(.custom("Poppins", size: 16).weight(.regular))
                             .lineLimit(1)
                             .minimumScaleFactor(0.85)
                             .foregroundColor(.white)
-                            .padding(.vertical, 14)
-                            .padding(.horizontal, 36)
-                            .background(takeDoseGreen)
+                            .padding(.horizontal, 28)
+                            .padding(.vertical, 8)
+                            .frame(minHeight: 56, maxHeight: 56, alignment: .center)
+                            .background(
+                                LinearGradient(
+                                    stops: [
+                                        Gradient.Stop(color: Color(red: 0.27, green: 0.77, blue: 0.37), location: 0.00),
+                                        Gradient.Stop(color: Color(red: 0.23, green: 0.73, blue: 0.33), location: 1.00),
+                                    ],
+                                    startPoint: UnitPoint(x: 0, y: 0.5),
+                                    endPoint: UnitPoint(x: 1, y: 0.5)
+                                )
+                            )
                             .overlay(TakeDoseMorphismOverlay())
-                            .clipShape(Capsule())
-                            .shadow(color: takeDoseGreen.opacity(0.4), radius: 8, x: 0, y: 4)
+                            .cornerRadius(420.30264)
+                            .shadow(color: Color(red: 0.2, green: 0.65, blue: 0.3).opacity(0.26), radius: 6.5, x: 8, y: 8)
+                            .shadow(color: .white, radius: 6.5, x: -8, y: -8)
                     }
                     .buttonStyle(.plain)
                 }
