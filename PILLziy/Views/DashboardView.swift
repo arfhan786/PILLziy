@@ -187,7 +187,7 @@ struct MedicationCardView: View {
             // Action buttons
             VStack(spacing: 12) {
                 // Skip Dose and Take Dose buttons in one line
-                HStack(spacing: 40) {
+                HStack(spacing: 16) {
                     // Skip Dose button (red)
                     NavigationLink(destination: SkipDoseImpactView(medication: medication)) {
                         HStack(alignment: .center, spacing: 6) {
@@ -199,12 +199,11 @@ struct MedicationCardView: View {
                                 .minimumScaleFactor(0.9)
                                 .layoutPriority(1)
 
-                            Spacer(minLength: 0)
                         }
                         .foregroundColor(.white)
-                        .padding(.horizontal, 16)
+                        .padding(.horizontal, 30)
                         .padding(.vertical, 8)
-                        .frame(maxWidth: .infinity, minHeight: 60, maxHeight: 60, alignment: .center)
+                        .frame(maxWidth: .infinity, minHeight: 56, maxHeight: 56, alignment: .center)
                         .background(
                             LinearGradient(
                                 stops: [
@@ -235,12 +234,11 @@ struct MedicationCardView: View {
                                 .minimumScaleFactor(0.9)
                                 .layoutPriority(1)
 
-                            Spacer(minLength: 0)
                         }
                         .foregroundColor(.white)
-                        .padding(.horizontal, 16)
+                        .padding(.horizontal, 30)
                         .padding(.vertical, 8)
-                        .frame(maxWidth: .infinity, minHeight: 60, maxHeight: 60, alignment: .center)
+                        .frame(maxWidth: .infinity, minHeight: 56, maxHeight: 56, alignment: .center)
                         .background(
                             LinearGradient(
                                 stops: [
@@ -263,7 +261,8 @@ struct MedicationCardView: View {
             }
             .padding(.top, 10)
         }
-        .padding(30)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 30)
         .background(Color.white)
         .cornerRadius(20)
         .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
